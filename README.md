@@ -1,9 +1,9 @@
 # The role of the microbiota in respiratory virus-bacterial pathobiont relationships in the upper respiratory tract
 
 Author: Matthew Kelly <a href="https://orcid.org/0000-0001-8819-2315" target="orcid.widget" rel="noopener noreferrer" style="vertical-align:top;"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" style="width:1em;margin-right:.5em;" alt="ORCID iD icon"></a>  
-Last update: October __, 2024
+Last update: October 18, 2024
 
-This repository contains the files and code necessary to replicate the analyses presented in the manuscript '_The role of the microbiota in respiratory virus-bacterial pathobiont relationships in the upper respiratory tract_', which has been submitted to medRxiv as a preprint (https://www.medrxiv.org/content/______________________). The overall objective of this manuscript was ____________________
+This repository contains the files and code necessary to replicate the analyses presented in the manuscript '_The role of the microbiota in respiratory virus-bacterial pathobiont relationships in the upper respiratory tract_', which has been submitted to medRxiv as a preprint (https://www.medrxiv.org/content/______________________). The overall objective of this manuscript was to investigate relationships between respiratory viruses, the URT bacterial microbiota, and bacterial respiratory pathobionts during infancy. We characterize the impact of respiratory virus infections on the risk of bacterial pathobiont colonization and identify cooperative relationships between H. influenzae, M. catarrhalis, and S. pneumoniae within the human URT. We demonstrate that the composition of the URT microbiota predicts the risk of bacterial pathobiont colonization during infancy and provide evidence that respiratory viruses predispose to pathobiont acquisition, at least in part through modification of the URT microbiota. Finally, we identify potential relationships between bacterial pathobionts and other URT microbes that could be leveraged to develop novel biotherapeutics for ARI prevention.
 
 ## Overview
 
