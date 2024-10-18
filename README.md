@@ -7,7 +7,7 @@ This repository contains the files and code necessary to replicate the analyses 
 
 ## Overview
 
-This repository contains the data files ([`Data_Files/`](Data_Files/)), scripts ([`Scripts/`](Scripts/)), and outputs ([`Outputs/`](Outputs/)) for each of the analyses presented in this manuscript. The raw sequencing files are publicly available in the Sequence Read Archive ([PRJNA1024980](https://www.ncbi.nlm.nih.gov/sra/?term=PRJNA1024980)). 
+This repository contains the data files ([`Data_Files/`](Data_Files/)), scripts ([`Scripts/`](Scripts/)), and outputs ([`Outputs/`](Outputs/)) for each of the analyses presented in this manuscript. The raw sequencing files are publicly available in the Sequence Read Archive ([PRJNA698366](https://www.ncbi.nlm.nih.gov/sra/?term=PRJNA698366)). 
 
 ## File Description
 
