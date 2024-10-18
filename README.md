@@ -18,11 +18,18 @@ This repository contains the data files ([`Data_Files/`](Data_Files/)), scripts 
   - [`phy.inf.np.picrust.rds`](Data_Files/phy.inf.np.picrust.rds): phyloseq object containing microbial pathway abundances for infant nasopharyngeal samples (n=2235) 
   - [`metadata_inf_np.csv`](Data_Files/metadata_inf_np.csv): metadata file with raw data associated with all infant study visit (n=2409)
   - [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv): metadata file with processed data associated with all infant study visits (n=2409)
+  - [`infant.png`](Data_Files/infant.png): infant image file for Figure 1
 
 - [`Scripts`](Scripts/)/
 
   - [`RV_Data_Preprocessing.R`](Scripts/RV_Data_Preprocessing.R): processing of raw sequencing data and metadata; inputs: [`phy.bots.nps.rds`](Data_Files/phy.bots.nps.rds), [`metadata_inf_np.csv`](Data_Files/metadata_inf_np.csv); outputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`phy.inf.np.picrust.rds`](Data_Files/phy.inf.np.picrust.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
-  
-  - [`RNASeq_Figure1.R`](Scripts/RNASeq_Figure1.R): Figure 1; inputs: [`phy.rnaseq.np.rds`](Data_Files/phy.rnaseq.np.rds), [`phy.rnaseq.pax.rds`](Data_Files/phy.rnaseq.pax.rds), FGSEA ("modules") output files in [`1_COVID_Neg_by_Age`](Output_Files/1_COVID_Neg_by_Age/)
+  - [`RV_PCR_Analyses.R`](Scripts/RV_PCR_Analyses.R): analyses of PCR data on respiratory viruses and bacterial pathobionts; inputs: [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
+  - [`RV_16S_Analyses.R`](Scripts/RV_16S_Analyses.R): analyses of upper respiratory microbiota data; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`phy.inf.np.picrust.rds`](Data_Files/phy.inf.np.picrust.rds); outputs: model output files contained in [`Output_Files`](Output_Files/)
+  - [`RV_Figure1.R`](Scripts/RV_Figure1.R): Figure 1; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv), [`infant.png`](Data_Files/infant.png)
+  - [`RV_Figure2.R`](Scripts/RV_Figure2.R): Figure 2; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
+  - [`RV_Figure3.R`](Scripts/RV_Figure3.R): Figure 3; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
+  - [`RV_Figure4.R`](Scripts/RV_Figure4.R): Figure 4; inputs: model output files contained in [`Output_Files`](Output_Files/)
 
-- [`Output_Files`](Output_Files/)/ 
+- [`Output_Files`](Output_Files/)/
+
+  - [`phy.bots.nps.rds`](Output_Files/phy.bots.nps.rds): phyloseq object containing raw read counts and metadata for all sequenced samples
