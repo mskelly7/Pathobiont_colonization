@@ -24,13 +24,11 @@ This repository contains the data files ([`Data_Files/`](Data_Files/)), scripts 
 
   - [`RV_Data_Preprocessing.R`](Scripts/RV_Data_Preprocessing.R): processing of raw sequencing data and metadata; inputs: [`phy.bots.nps.rds`](Data_Files/phy.bots.nps.rds), [`metadata_inf_np.csv`](Data_Files/metadata_inf_np.csv); outputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`phy.inf.np.picrust.rds`](Data_Files/phy.inf.np.picrust.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
   - [`RV_PCR_Analyses.R`](Scripts/RV_PCR_Analyses.R): analyses of PCR data on respiratory viruses and bacterial pathobionts; inputs: [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
-  - [`RV_16S_Analyses.R`](Scripts/RV_16S_Analyses.R): analyses of upper respiratory microbiota data; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`phy.inf.np.picrust.rds`](Data_Files/phy.inf.np.picrust.rds); outputs: model output files contained in [`Output_Files`](Output_Files/)
+  - [`RV_16S_Analyses.R`](Scripts/RV_16S_Analyses.R): analyses of upper respiratory microbiota data; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`phy.inf.np.picrust.rds`](Data_Files/phy.inf.np.picrust.rds); outputs: output files contained in [`Output_Files`](Output_Files/)
   - [`RV_Figure1.R`](Scripts/RV_Figure1.R): Figure 1; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv), [`infant.png`](Data_Files/infant.png)
-  - [`RV_Figure2.R`](Scripts/RV_Figure2.R): Figure 2; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
-  - [`RV_Figure3.R`](Scripts/RV_Figure3.R): Figure 3; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv), model output files contained in [`Output_Files/Maaslin2/`](Output_Files/Maaslin2/)
-  - [`RV_Figure4.R`](Scripts/RV_Figure4.R): Figure 4; inputs: model output files contained in [`Output_Files/Random_Forest/`](Output_Files/Random_Forest/), [`Output_Files/Mixed_Effect_Logistic_Regression/`](Output_Files/Mixed_Effect_Logistic_Regression/)
-  - 
-
-- [`Output_Files`](Output_Files/)/
-
-  - [`phy.bots.nps.rds`](Output_Files/phy.bots.nps.rds): phyloseq object containing raw read counts and metadata for all sequenced samples
+  - [`RV_Figure2.R`](Scripts/RV_Figure2.R): Figure 2; input: [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
+  - [`RV_Figure3.R`](Scripts/RV_Figure3.R): Figure 3; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), model output files contained in [`Output_Files/Maaslin2/`](Output_Files/Maaslin2/)
+  - [`RV_Figure4.R`](Scripts/RV_Figure4.R): Figure 4; inputs: output files contained in [`Output_Files/Random_Forest/`](Output_Files/Random_Forest/), [`Output_Files/Mixed_Effect_Logistic_Regression/`](Output_Files/Mixed_Effect_Logistic_Regression/)
+  - [`RV_FigureS1.R`](Scripts/RV_FigureS1.R): Supplementary Figure 1; input: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds)
+  - [`RV_FigureS2.R`](Scripts/RV_FigureS2.R): Supplementary Figure 2; input: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds)
+  - [`RV_FigureS3.R`](Scripts/RV_FigureS3.R): Supplementary Figure 3; output files contained in [`Output_Files/`](Output_Files/)
