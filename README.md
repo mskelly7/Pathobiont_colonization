@@ -27,8 +27,9 @@ This repository contains the data files ([`Data_Files/`](Data_Files/)), scripts 
   - [`RV_16S_Analyses.R`](Scripts/RV_16S_Analyses.R): analyses of upper respiratory microbiota data; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`phy.inf.np.picrust.rds`](Data_Files/phy.inf.np.picrust.rds); outputs: model output files contained in [`Output_Files`](Output_Files/)
   - [`RV_Figure1.R`](Scripts/RV_Figure1.R): Figure 1; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv), [`infant.png`](Data_Files/infant.png)
   - [`RV_Figure2.R`](Scripts/RV_Figure2.R): Figure 2; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
-  - [`RV_Figure3.R`](Scripts/RV_Figure3.R): Figure 3; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
-  - [`RV_Figure4.R`](Scripts/RV_Figure4.R): Figure 4; inputs: model output files contained in [`Output_Files`](Output_Files/)
+  - [`RV_Figure3.R`](Scripts/RV_Figure3.R): Figure 3; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv), model output files contained in [`Output_Files/Maaslin2/`](Output_Files/Maaslin2/)
+  - [`RV_Figure4.R`](Scripts/RV_Figure4.R): Figure 4; inputs: model output files contained in [`Output_Files/Random_Forest/`](Output_Files/Random_Forest/), [`Output_Files/Mixed_Effect_Logistic_Regression/`](Output_Files/Mixed_Effect_Logistic_Regression/)
+  - 
 
 - [`Output_Files`](Output_Files/)/
 
