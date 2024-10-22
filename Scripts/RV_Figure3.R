@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Analyses
 # Matthew Kelly, MD, MPH 
 # Figure 3
-# Last updated: October 18, 2024
+# Last updated: October 21, 2024
 
 remove(list=ls())
-setwd("_____________________") 
+setwd("_________________________") 
 set.seed(1234)
 
 version
@@ -146,7 +146,7 @@ cluster_barplot <- ggplot(arrange(relative_inf, Genus), aes(x=cluster, y=Abundan
                              expression(italic("Haemophilus")), expression(italic("Lactobacillus")), expression(italic("Micrococcus")), expression(italic("Moraxella")), 
                              expression(italic("Neisseria")), expression(italic("Prevotella")), expression(italic("Pseudomonas")), expression(italic("Staphylococcus")), 
                              expression(italic("Streptococcus")), expression(italic("Veillonella")), "Other")) + 
-  xlab("Microbiota profile") + ylab("Relative abundance") 
+  xlab("Microbiota type") + ylab("Relative abundance") 
 
 png(file="R_Plots/Figure_3/Figure_3b.png", width = 4.125, height = 2.8, units = 'in', res = 1200)
 plot(cluster_barplot)

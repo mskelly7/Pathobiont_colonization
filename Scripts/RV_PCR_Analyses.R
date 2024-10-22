@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Pathobiont Analyses
 # Matthew Kelly, MD, MPH 
 # Analyses of respiratory virus and bacterial pathobiont PCR data
-# Last update: October 18, 2024
+# Last update: October 21, 2024
 
 remove(list=ls())
-setwd("__________________") 
+setwd("____________________") 
 set.seed(1234)
 
 version
@@ -16,8 +16,6 @@ library(gridExtra)
 library(reshape2)
 library(survminer)
 library(DataCombine)
-library(survival)
-packageVersion("survival")
 library(ggsignif)
 library(grid)
 library(lme4)
@@ -41,48 +39,41 @@ metadata_rv_bact <- subset(metadata_inf_np, !is.na(inf_rv_yn) & !is.na(inf_multi
                              !is.na(inf_multi_sa) & !is.na(inf_multi_sp))
 nrow(metadata_rv_bact)
 
-# Create datasets for survival analyses
-survival <- metadata_rv_bact
-survival <- survival[order(survival$study_id, survival$month),]
-survival$month <- as.numeric(survival$month)
-survival$study_id <- as.factor(survival$study_id)
-survival <- suppressWarnings(slide(survival, "age_days", TimeVar="month", GroupVar="study_id", NewVar="age_lag", slideBy = -1))
-names(survival)[names(survival) == "age_days"] <- "stop_age"
-survival$stop <- as.numeric(survival$stop)
-names(survival)[names(survival) == "month"] <- "stop_month"
-names(survival)[names(survival) == "age_lag"] <- "start_age"
-survival$inf_multi_hi[survival$inf_multi_hi=="Y"] <- 1
-survival$inf_multi_hi[survival$inf_multi_hi=="N"] <- 0
-survival$inf_multi_hi <- as.numeric(survival$inf_multi_hi)
-survival$inf_multi_mc[survival$inf_multi_mc=="Y"] <- 1
-survival$inf_multi_mc[survival$inf_multi_mc=="N"] <- 0
-survival$inf_multi_mc <- as.numeric(survival$inf_multi_mc)
-survival$inf_multi_sa[survival$inf_multi_sa=="Y"] <- 1
-survival$inf_multi_sa[survival$inf_multi_sa=="N"] <- 0
-survival$inf_multi_sa <- as.numeric(survival$inf_multi_sa)
-survival$inf_multi_sp[survival$inf_multi_sp=="Y"] <- 1
-survival$inf_multi_sp[survival$inf_multi_sp=="N"] <- 0
-survival$inf_multi_sp <- as.numeric(survival$inf_multi_sp)
-survival <- suppressWarnings(slide(survival, "inf_multi_hi", TimeVar="stop_month", GroupVar="study_id", NewVar="hi_lag", slideBy = -1))
-survival <- suppressWarnings(slide(survival, "inf_multi_mc", TimeVar="stop_month", GroupVar="study_id", NewVar="mc_lag", slideBy = -1))
-survival <- suppressWarnings(slide(survival, "inf_multi_sa", TimeVar="stop_month", GroupVar="study_id", NewVar="sa_lag", slideBy = -1))
-survival <- suppressWarnings(slide(survival, "inf_multi_sp", TimeVar="stop_month", GroupVar="study_id", NewVar="sp_lag", slideBy = -1))
-nrow(survival)
-survival <- survival[,c("SampleID","study_id","start_age","stop_age","stop_month","inf_rv_yn","inf_rv_cat2","inf_multi_hi","hi_lag",
-                        "inf_multi_mc","mc_lag","inf_multi_sa","sa_lag","inf_multi_sp","sp_lag", "sex", "lbw", "mat_hiv", "residence", "wood", "num_kids", "season", 
-                        "breastmilk", "inf_abx_any", "pcv", "hib")]
+# Create datasets for analyses of pathobiont acquisition
+acquisition <- metadata_rv_bact
+acquisition <- acquisition[order(acquisition$study_id, acquisition$month),]
+acquisition$inf_multi_hi[acquisition$inf_multi_hi=="Y"] <- 1
+acquisition$inf_multi_hi[acquisition$inf_multi_hi=="N"] <- 0
+acquisition$inf_multi_hi <- as.numeric(acquisition$inf_multi_hi)
+acquisition$inf_multi_mc[acquisition$inf_multi_mc=="Y"] <- 1
+acquisition$inf_multi_mc[acquisition$inf_multi_mc=="N"] <- 0
+acquisition$inf_multi_mc <- as.numeric(acquisition$inf_multi_mc)
+acquisition$inf_multi_sa[acquisition$inf_multi_sa=="Y"] <- 1
+acquisition$inf_multi_sa[acquisition$inf_multi_sa=="N"] <- 0
+acquisition$inf_multi_sa <- as.numeric(acquisition$inf_multi_sa)
+acquisition$inf_multi_sp[acquisition$inf_multi_sp=="Y"] <- 1
+acquisition$inf_multi_sp[acquisition$inf_multi_sp=="N"] <- 0
+acquisition$inf_multi_sp <- as.numeric(acquisition$inf_multi_sp)
+acquisition <- suppressWarnings(slide(acquisition, "inf_multi_hi", TimeVar="month", GroupVar="study_id", NewVar="hi_lag", slideBy = -1))
+acquisition <- suppressWarnings(slide(acquisition, "inf_multi_mc", TimeVar="month", GroupVar="study_id", NewVar="mc_lag", slideBy = -1))
+acquisition <- suppressWarnings(slide(acquisition, "inf_multi_sa", TimeVar="month", GroupVar="study_id", NewVar="sa_lag", slideBy = -1))
+acquisition <- suppressWarnings(slide(acquisition, "inf_multi_sp", TimeVar="month", GroupVar="study_id", NewVar="sp_lag", slideBy = -1))
+nrow(acquisition)
+acquisition <- acquisition[,c("SampleID","study_id","age_days","month","inf_rv_yn","inf_rv_cat2","inf_multi_hi","hi_lag","inf_multi_mc","mc_lag",
+                              "inf_multi_sa","sa_lag","inf_multi_sp","sp_lag", "sex", "lbw", "mat_hiv", "residence", "wood", "num_kids", "season", 
+                              "breastmilk", "inf_abx_any", "pcv", "hib")]
 # Remove 0-month timepoint (do not predict outcome at 0 months)
-survival <- subset(survival, stop_month!="0")
-nrow(survival)
+acquisition <- subset(acquisition, month!="0")
+nrow(acquisition)
 # Remove intervals with baseline or persistent colonization
-survival_hi <- subset(survival, hi_lag!=1)
-nrow(survival_hi)
-survival_mc <- subset(survival, mc_lag!=1)
-nrow(survival_mc)
-survival_sa <- subset(survival, sa_lag!=1)
-nrow(survival_sa)
-survival_sp <- subset(survival, sp_lag!=1)
-nrow(survival_sp)
+acquisition_hi <- subset(acquisition, hi_lag!=1)
+nrow(acquisition_hi)
+acquisition_mc <- subset(acquisition, mc_lag!=1)
+nrow(acquisition_mc)
+acquisition_sa <- subset(acquisition, sa_lag!=1)
+nrow(acquisition_sa)
+acquisition_sp <- subset(acquisition, sp_lag!=1)
+nrow(acquisition_sp)
 
 # ********************************************************************
 # GENERATE SUMMARY DATA ON RESPIRATORY VIRUS INFECTIONS IN THIS COHORT
@@ -181,62 +172,57 @@ logit_rti_sp_se <- sqrt(diag(vcov(logit_rti_sp)))
 exp(cbind(Est = fixef(logit_rti_sp), LL = fixef(logit_rti_sp) - 1.96 * logit_rti_sp_se, UL = fixef(logit_rti_sp) + 1.96*logit_rti_sp_se))
 
 # ***************************************************************************************
-# ANALYSES EVALUATING FOR ASSOCIATIONS WITH THE RISK OF BACTERIAL PATHOBIONT COLONIZATION
+# ANALYSES EVALUATING FOR ASSOCIATIONS WITH THE ODDS OF BACTERIAL PATHOBIONT COLONIZATION
 # ***************************************************************************************
 
-# Multivariable recurrent event Cox PH models evaluating associations between infant characteristics, virus detection, and pathobiont colonization on risk of specific pathobionts
-# Infant characteristics evaluated were age (study timepoint), season, maternal HIV infection, number of kids in the household, breastfeeding, antibiotics
+# Mixed effect logistic regression models evaluating associations between infant characteristics, virus detection, and pathobiont colonization on odds of pathobiont acquisition
+# Infant characteristics evaluated were age (visit month), season, maternal HIV infection, number of kids in the household, breastfeeding, antibiotics
 # Analyses for S. pneumoniae acquisition were additionally adjusted for PCV-13 doses 
 
-# H. influenzae
-cox_hi <- coxph(Surv(start_age, stop_age, inf_multi_hi) ~ inf_rv_yn + mc_lag + sa_lag + sp_lag + stop_month + 
-                  sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any +  
-                  cluster(study_id), id=study_id, data=survival_hi)
-summary(cox_hi)
-cox_hi_ph <- cox.zph(cox_hi) # test of the proportional hazards assumption (P<0.05 is indicative of non-proportional hazards)
-cox_hi_ph
-suppressWarnings(ggcoxzph(cox_hi_ph)) # generate plot of scaled Schoenfeld residuals
-remove(cox_hi_ph)
-# M. catarrhalis colonization is associated with an increased hazard of H. influenzae colonization
-# A higher number of children in the household is associated with an increased hazard of H. influenzae colonization
+logit_hi <- glmer(inf_multi_hi ~ inf_rv_yn + mc_lag + sa_lag + sp_lag + month + 
+                    sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + (1 | study_id), 
+                      data = acquisition_hi, family = binomial, 
+                      control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_hi)
+logit_hi_se <- sqrt(diag(vcov(logit_hi)))
+exp(cbind(Est = fixef(logit_hi), LL = fixef(logit_hi) - 1.96 * logit_hi_se, UL = fixef(logit_hi) + 1.96*logit_hi_se))
+# Respiratory virus infection and preceding M. catarrhalis/S. pneumoniae colonization are associated with higher odds of H. influenzae acquisition
+# A higher number of children in the household is associated with an increased odds of H. influenzae acquisition
 
-# M. catarrhalis 
-cox_mc <- coxph(Surv(start_age, stop_age, inf_multi_mc) ~ inf_rv_yn + hi_lag + sa_lag + sp_lag + stop_month +
-                  sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + 
-                  cluster(study_id), id=study_id, data=survival_mc)
-summary(cox_mc)
-cox_mc_ph <- cox.zph(cox_mc) # test of the proportional hazards assumption (P<0.05 is indicative of non-proportional hazards)
-cox_mc_ph
-suppressWarnings(ggcoxzph(cox_mc_ph)) # generate plot of scaled Schoenfeld residuals
-remove(cox_mc_ph)
-# RV detection and S. pneumoniae colonization are associated with an increased hazard of M. catarrhalis colonization
-# Maternal HIV infection, higher number of children in the household associated with an increased hazard of M. catarrhalis colonization
-# Breastfeeding associated with a lower hazard of M. catarrhalis colonization
+logit_mc <- glmer(inf_multi_mc ~ inf_rv_yn + hi_lag + sa_lag + sp_lag + month + 
+                    sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + (1 | study_id), 
+                  data = acquisition_mc, family = binomial, 
+                  control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_mc)
+logit_mc_se <- sqrt(diag(vcov(logit_mc)))
+exp(cbind(Est = fixef(logit_mc), LL = fixef(logit_mc) - 1.96 * logit_mc_se, UL = fixef(logit_mc) + 1.96*logit_mc_se))
+# Trend toward increased odds of M. catarrhalis acquisition with respiratory virus infection
+# No association between preceding pathobiont colonization and the odds of M. catarrhalis acquisition
+# Lower risk of M. catarrhalis acquisition during the rainy (warm) season
 
-# S. aureus
-cox_sa <- coxph(Surv(start_age, stop_age, inf_multi_sa) ~ inf_rv_yn + hi_lag + mc_lag + sp_lag + stop_month + 
-                  sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + 
-                  cluster(study_id), id=study_id, data=survival_sa)
-summary(cox_sa)
-cox_sa_ph <- cox.zph(cox_sa) # test of the proportional hazards assumption (P<0.05 is indicative of non-proportional hazards)
-cox_sa_ph
-suppressWarnings(ggcoxzph(cox_sa_ph)) # generate plot of scaled Schoenfeld residuals
-remove(cox_sa_ph)
-# RV detection is associated with a lower risk of S. aureus colonization
-# Higher hazard of S. aureus colonization during the rainy season
+logit_sa <- glmer(inf_multi_sa ~ inf_rv_yn + hi_lag + mc_lag + sp_lag + month + 
+                    sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + (1 | study_id), 
+                  data = acquisition_sa, family = binomial, 
+                  control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_sa)
+logit_sa_se <- sqrt(diag(vcov(logit_sa)))
+exp(cbind(Est = fixef(logit_sa), LL = fixef(logit_sa) - 1.96 * logit_sa_se, UL = fixef(logit_sa) + 1.96*logit_sa_se))
+# Respiratory virus infection is associated with a lower odds of S. aureus acquisition
+# Trend toward lower odds of S. aureus acquisition with preceding S. pneumoniae acquisition
+# Higher odds of S. aureus acquisition during the rainy season
+# Lower odds of S. aureus acquisition with breastfeeding, receipt antibiotic treatment 
 
-# S. pneumoniae - additionally adjust for PCV-13 doses
-cox_sp <- coxph(Surv(start_age, stop_age, inf_multi_sp) ~ inf_rv_yn + hi_lag + mc_lag + sa_lag + stop_month + 
-                  sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + pcv + 
-                  cluster(study_id), id=study_id, data=survival_sp)
-summary(cox_sp)
-cox_sp_ph <- cox.zph(cox_sp) # test of the proportional hazards assumption (P<0.05 is indicative of non-proportional hazards)
-cox_sp_ph
-suppressWarnings(ggcoxzph(cox_sp_ph)) # generate plot of scaled Schoenfeld residuals
-remove(cox_sp_ph)
-# RV detection and M. catarrhalis colonization associated with higher hazard of S. pneumoniae colonization
-# A higher number of children in the household and urban residence is associated with an increased hazard of S. pneumoniae colonization
-# PCV-13 vaccination associated with a lower hazard of S. pneumoniae colonization
+logit_sp <- glmer(inf_multi_sp ~ inf_rv_yn + hi_lag + mc_lag + sa_lag + month + 
+                    sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + pcv + (1 | study_id), 
+                  data = acquisition_sp, family = binomial, 
+                  control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_sp)
+logit_sp_se <- sqrt(diag(vcov(logit_sp)))
+exp(cbind(Est = fixef(logit_sp), LL = fixef(logit_sp) - 1.96 * logit_sp_se, UL = fixef(logit_sp) + 1.96*logit_sp_se))
+# Respiratory virus infection and M. catarrhalis colonization associated with higher odds of S. pneumoniae acquisition
+# Trend toward higher odds of S. pneumoniae acquisition with preceding H. influenzae acquisition
+# A higher number of children in the household and urban residence is associated with higher odds of S. pneumoniae acquisition
+# No association between PCV-13 vaccination status and the odds of S. pneumoniae acquisition
 
 # Pneumococcal colonization density among infants with S. pneumoniae carriage
 # Linear regression model evaluating associations between infant characteristics, viral infections, and other pathobiont colonization on pneumococcal colonization density
@@ -245,55 +231,50 @@ tapply(metadata_rv_sp$inf_sp, metadata_rv_sp$inf_rv_yn, summary)
 tapply(metadata_rv_sp$inf_sp, metadata_rv_sp$inf_multi_hi, summary)
 summary(lm(inf_sp ~ inf_rv_yn + inf_multi_hi + inf_multi_mc + inf_multi_sa + month + sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + 
              pcv, data=metadata_rv_sp))
-# RV detection is associated with higher pneumococcal colonization density in samples with Sp colonization (linear regression, p=0.006)
-# Higher pneumococcal colonization density with H. influenzae colonization (p<0.0001), decreasing age (p=0.001), a higher number of children in the household (p=0.009),
-# and antibiotic exposure since the last study visit (p=0.006)
-# No association with number of PCV-13 doses
+# Respiratory virus detection is associated with higher pneumococcal colonization density in samples with Sp colonization 
+# Higher pneumococcal colonization density with H. influenzae colonization, decreasing age, a higher number of children in the household, antibiotic exposure
+# No association with PCV-13 vaccination status
 
 # Analyses categorizing respiratory viruses as involving rhino/entero only vs. other respiratory virus infections
 
 # H. influenzae - respiratory virus infections (rhino/entero vs. other) 
-cox_hi2 <- coxph(Surv(start_age, stop_age, inf_multi_hi) ~ inf_rv_cat2 + mc_lag + sa_lag + sp_lag + stop_month + 
-                   sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + 
-                   cluster(study_id), id=study_id, data=survival_hi)
-summary(cox_hi2)
-cox_hi2_ph <- cox.zph(cox_hi2) # test of the proportional hazards assumption (P<0.05 is indicative of non-proportional hazards)
-cox_hi2_ph
-suppressWarnings(ggcoxzph(cox_hi2_ph)) # generate plot of scaled Schoenfeld residuals
-remove(cox_hi2_ph)
-# Higher hazard of H. influenzae colonization with "other" respiratory virus infections 
+logit_hi2 <- glmer(inf_multi_hi ~ inf_rv_cat2 + mc_lag + sa_lag + sp_lag + month + 
+                    sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + (1 | study_id), 
+                  data = acquisition_hi, family = binomial, 
+                  control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_hi2)
+logit_hi2_se <- sqrt(diag(vcov(logit_hi2)))
+exp(cbind(Est = fixef(logit_hi2), LL = fixef(logit_hi2) - 1.96 * logit_hi2_se, UL = fixef(logit_hi2) + 1.96*logit_hi2_se))
+# Higher odds of H. influenzae acquisition with "other" respiratory virus infections 
 
 # M. catarrhalis - respiratory virus infections (rhino/entero vs. other) 
-cox_mc2 <- coxph(Surv(start_age, stop_age, inf_multi_mc) ~ inf_rv_cat2 + hi_lag + sa_lag + sp_lag + stop_month + 
-                   sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + 
-                   cluster(study_id), id=study_id, data=survival_mc)
-summary(cox_mc2)
-cox_mc2_ph <- cox.zph(cox_mc2) # test of the proportional hazards assumption (P<0.05 is indicative of non-proportional hazards)
-cox_mc2_ph
-suppressWarnings(ggcoxzph(cox_mc2_ph)) # generate plot of scaled Schoenfeld residuals
-remove(cox_mc2_ph)
-# Higher hazard of H. influenzae colonization with "other" respiratory virus infections (p=0.003)
+logit_mc2 <- glmer(inf_multi_mc ~ inf_rv_cat2 + hi_lag + sa_lag + sp_lag + month + 
+                     sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + (1 | study_id), 
+                   data = acquisition_mc, family = binomial, 
+                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_mc2)
+logit_mc2_se <- sqrt(diag(vcov(logit_mc2)))
+exp(cbind(Est = fixef(logit_mc2), LL = fixef(logit_mc2) - 1.96 * logit_mc2_se, UL = fixef(logit_mc2) + 1.96*logit_mc2_se))
+# Higher odds of M. catarrhalis acquisition with "other" respiratory virus infections 
 
 # S. aureus - respiratory virus infections (rhino/entero vs. other) 
-cox_sa2 <- coxph(Surv(start_age, stop_age, inf_multi_sa) ~ inf_rv_cat2 + hi_lag + mc_lag + sp_lag + stop_month + 
-                   sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + 
-                   cluster(study_id), id=study_id, data=survival_sa)
-summary(cox_sa2)
-cox_sa2_ph <- cox.zph(cox_sa2) # test of the proportional hazards assumption (P<0.05 is indicative of non-proportional hazards)
-cox_sa2_ph
-suppressWarnings(ggcoxzph(cox_sa2_ph)) # generate plot of scaled Schoenfeld residuals
-remove(cox_sa2_ph)
-# Both rhino/entero and other respiratory viruses associated with lower hazard of S. aureus colonization
+logit_sa2 <- glmer(inf_multi_sa ~ inf_rv_cat2 + hi_lag + mc_lag + sp_lag + month + 
+                     sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + (1 | study_id), 
+                   data = acquisition_sa, family = binomial, 
+                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_sa2)
+logit_sa2_se <- sqrt(diag(vcov(logit_sa2)))
+exp(cbind(Est = fixef(logit_sa2), LL = fixef(logit_sa2) - 1.96 * logit_sa2_se, UL = fixef(logit_sa2) + 1.96*logit_sa2_se))
+# Both rhino/entero and other respiratory viruses associated with lower odds of S. aureus acquisition
 
 # S. pneumoniae - respiratory virus infections (rhino/entero vs. other) 
-cox_sp2 <- coxph(Surv(start_age, stop_age, inf_multi_sp) ~ inf_rv_cat2 + hi_lag + mc_lag + sa_lag + stop_month + 
-                   sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + pcv + 
-                   cluster(study_id), id=study_id, data=survival_sp)
-summary(cox_sp2)
-cox_sp2_ph <- cox.zph(cox_sp2) # test of the proportional hazards assumption (P<0.05 is indicative of non-proportional hazards)
-cox_sp2_ph
-suppressWarnings(ggcoxzph(cox_sp2_ph)) # generate plot of scaled Schoenfeld residuals
-remove(cox_sp2_ph)
+logit_sp2 <- glmer(inf_multi_sp ~ inf_rv_cat2 + hi_lag + mc_lag + sa_lag + month + 
+                     sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + pcv + (1 | study_id), 
+                   data = acquisition_sp, family = binomial, 
+                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_sp2)
+logit_sp2_se <- sqrt(diag(vcov(logit_sp2)))
+exp(cbind(Est = fixef(logit_sp2), LL = fixef(logit_sp2) - 1.96 * logit_sp2_se, UL = fixef(logit_sp2) + 1.96*logit_sp2_se))
 # Both rhino/entero and other respiratory virus infections associated with an increased risk of S. pneumoniae colonization
 
 # PNEUMOCOCCAL COLONIZATION DENSITY
@@ -304,15 +285,12 @@ summary(lm(inf_sp ~ relevel(inf_rv_cat2, ref="Other") + inf_multi_hi + inf_multi
              month + sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + pcv, data=metadata_rv_sp))
 # No difference in pneumococcal colonization density comparing infections involving rhino/entero only vs. infections with other viruses
 
-# ********
-# ABSTRACT
-# ********
+# **************
+# ABSTRACT/INTRO
+# **************
 
-suppressWarnings(nrow(infants))
 nrow(metadata_inf_np)
-table(metadata_rv$inf_rv_yn)
-
-
+suppressWarnings(nrow(infants))
 
 # *******
 # RESULTS
@@ -320,6 +298,7 @@ table(metadata_rv$inf_rv_yn)
 
 # Respiratory virus infections and bacterial pathobiont colonization occur frequently during infancy
 
+nrow(metadata_inf_np)
 suppressWarnings(nrow(infants))
 summary(infants$bw)
 nrow(metadata_rv)
@@ -357,24 +336,39 @@ summary(logit_rti_acq)
 exp(cbind(Est = fixef(logit_rti_acq), LL = fixef(logit_rti_acq) - 1.96*logit_rti_acq_se, UL = fixef(logit_rti_acq) + 1.96*logit_rti_acq_se))
 summary(logit_rti_sp)
 exp(cbind(Est = fixef(logit_rti_sp), LL = fixef(logit_rti_sp) - 1.96 * logit_rti_sp_se, UL = fixef(logit_rti_sp) + 1.96*logit_rti_sp_se))
+prop.table(table(metadata_bact$inf_hi_new, metadata_bact$inf_abx_any, useNA="always"),1)
+prop.table(table(metadata_bact$inf_mc_new, metadata_bact$inf_abx_any, useNA="always"),1)
+prop.table(table(metadata_bact$inf_sp_new, metadata_bact$inf_abx_any, useNA="always"),1)
+metadata_bact$inf_any_new[metadata_bact$inf_hi_new=="N" & metadata_bact$inf_mc_new=="N" & metadata_bact$inf_sp_new=="N"] <- "N"
+metadata_bact$inf_any_new[metadata_bact$inf_hi_new=="Y" | metadata_bact$inf_mc_new=="Y" | metadata_bact$inf_sp_new=="Y"] <- "Y"
+prop.table(table(metadata_bact$inf_any_new, metadata_bact$inf_abx_any, useNA="always"),1)
 
 # Infant and sample characteristics associated with the dynamics of bacterial pathobiont colonization 
 
-summary(cox_hi)
-summary(cox_mc)
-summary(cox_sp)
-summary(cox_sa)
+summary(logit_hi)
+exp(cbind(Est = fixef(logit_hi), LL = fixef(logit_hi) - 1.96 * logit_hi_se, UL = fixef(logit_hi) + 1.96*logit_hi_se))
+summary(logit_mc)
+exp(cbind(Est = fixef(logit_mc), LL = fixef(logit_mc) - 1.96 * logit_mc_se, UL = fixef(logit_mc) + 1.96*logit_mc_se))
+summary(logit_sp)
+exp(cbind(Est = fixef(logit_sp), LL = fixef(logit_sp) - 1.96 * logit_sp_se, UL = fixef(logit_sp) + 1.96*logit_sp_se))
+summary(logit_sa)
+exp(cbind(Est = fixef(logit_sa), LL = fixef(logit_sa) - 1.96 * logit_sa_se, UL = fixef(logit_sa) + 1.96*logit_sa_se))
 
 table(metadata_rv$inf_rv_cat2)
 tapply(metadata_rv_sp$inf_sp, metadata_rv_sp$inf_rv_yn, summary)
 summary(lm(inf_sp ~ inf_rv_yn + inf_multi_hi + inf_multi_mc + inf_multi_sa + month + season + mat_hiv + num_kids + breastmilk + inf_abx_any + pcv, data=metadata_rv_sp))
+tapply(metadata_rv_sp$inf_sp, metadata_rv_sp$inf_rv_cat2, summary)
 summary(lm(inf_sp ~ relevel(inf_rv_cat2, ref="Other") + inf_multi_hi + inf_multi_mc + inf_multi_sa + month + season + mat_hiv + num_kids + 
              breastmilk + inf_abx_any + pcv, data=metadata_rv_sp))
 
-summary(cox_hi)
-summary(cox_mc)
-summary(cox_sp)
-summary(cox_sa)
+summary(logit_hi)
+exp(cbind(Est = fixef(logit_hi), LL = fixef(logit_hi) - 1.96 * logit_hi_se, UL = fixef(logit_hi) + 1.96*logit_hi_se))
+summary(logit_mc)
+exp(cbind(Est = fixef(logit_mc), LL = fixef(logit_mc) - 1.96 * logit_mc_se, UL = fixef(logit_mc) + 1.96*logit_mc_se))
+summary(logit_sa)
+exp(cbind(Est = fixef(logit_sa), LL = fixef(logit_sa) - 1.96 * logit_sa_se, UL = fixef(logit_sa) + 1.96*logit_sa_se))
+summary(logit_sp)
+exp(cbind(Est = fixef(logit_sp), LL = fixef(logit_sp) - 1.96 * logit_sp_se, UL = fixef(logit_sp) + 1.96*logit_sp_se))
 
 table(metadata_rv_sp$inf_multi_sp, metadata_rv_sp$inf_sp_new)
 summary(lm(inf_sp ~ inf_rv_yn + inf_multi_hi + inf_multi_mc + inf_multi_sa + month + season + mat_hiv + num_kids + breastmilk + inf_abx_any + pcv, data=metadata_rv_sp))
@@ -389,14 +383,19 @@ fisher.test(metadata_bact$inf_multi_sa_pos, metadata_bact$inf_multi_hi_pos)
 fisher.test(metadata_bact$inf_multi_sa_pos, metadata_bact$inf_multi_mc_pos)
 fisher.test(metadata_bact$inf_multi_sa_pos, metadata_bact$inf_multi_sp_pos)
 
-summary(cox_hi)
-summary(cox_mc)
-summary(cox_sp)
-summary(cox_sa)
+summary(logit_hi)
+exp(cbind(Est = fixef(logit_hi), LL = fixef(logit_hi) - 1.96 * logit_hi_se, UL = fixef(logit_hi) + 1.96*logit_hi_se))
+summary(logit_mc)
+exp(cbind(Est = fixef(logit_mc), LL = fixef(logit_mc) - 1.96 * logit_mc_se, UL = fixef(logit_mc) + 1.96*logit_mc_se))
+summary(logit_sp)
+exp(cbind(Est = fixef(logit_sp), LL = fixef(logit_sp) - 1.96 * logit_sp_se, UL = fixef(logit_sp) + 1.96*logit_sp_se))
 
 table(metadata_rv_sp$inf_multi_sp, metadata_rv_sp$inf_sp_new)
 tapply(metadata_rv_sp$inf_sp, metadata_rv_sp$inf_multi_hi, summary)
 summary(lm(inf_sp ~ inf_rv_yn + inf_multi_hi + inf_multi_mc + inf_multi_sa + month + season + mat_hiv + num_kids + breastmilk + inf_abx_any + pcv, data=metadata_rv_sp))
+
+summary(logit_sa)
+exp(cbind(Est = fixef(logit_sa), LL = fixef(logit_sa) - 1.96 * logit_sa_se, UL = fixef(logit_sa) + 1.96*logit_sa_se))
 
 # *******
 # TABLE 1
@@ -494,10 +493,14 @@ remove(abx, abx_any, amox_any, metro_any, cotrim_any)
 # TABLE 2
 # *******
 
-summary(cox_hi)
-summary(cox_mc)
-summary(cox_sa)
-summary(cox_sp)
+summary(logit_hi)
+exp(cbind(Est = fixef(logit_hi), LL = fixef(logit_hi) - 1.96 * logit_hi_se, UL = fixef(logit_hi) + 1.96*logit_hi_se))
+summary(logit_mc)
+exp(cbind(Est = fixef(logit_mc), LL = fixef(logit_mc) - 1.96 * logit_mc_se, UL = fixef(logit_mc) + 1.96*logit_mc_se))
+summary(logit_sa)
+exp(cbind(Est = fixef(logit_sa), LL = fixef(logit_sa) - 1.96 * logit_sa_se, UL = fixef(logit_sa) + 1.96*logit_sa_se))
+summary(logit_sp)
+exp(cbind(Est = fixef(logit_sp), LL = fixef(logit_sp) - 1.96 * logit_sp_se, UL = fixef(logit_sp) + 1.96*logit_sp_se))
 
 # ********************
 # SUPPLEMENTAL TABLE 1
@@ -575,38 +578,46 @@ prop.table(table(metadata_rv$inf_rv_cat, metadata_rv$current_uri),1)
 # SUPPLEMENTAL TABLE 2
 # ********************
 
-table(survival_hi$inf_rv_yn)
-table(survival_hi$inf_rv_cat2)
-table(survival_hi$inf_rv_yn, survival_hi$inf_multi_hi)
-table(survival_hi$inf_rv_cat2, survival_hi$inf_multi_hi)
-prop.table(table(survival_hi$inf_rv_yn, survival_hi$inf_multi_hi),1)
-prop.table(table(survival_hi$inf_rv_cat2, survival_hi$inf_multi_hi),1)
-summary(cox_hi)
-summary(cox_hi2)
+table(acquisition_hi$inf_rv_yn)
+table(acquisition_hi$inf_rv_cat2)
+table(acquisition_hi$inf_rv_yn, acquisition_hi$inf_multi_hi)
+table(acquisition_hi$inf_rv_cat2, acquisition_hi$inf_multi_hi)
+prop.table(table(acquisition_hi$inf_rv_yn, acquisition_hi$inf_multi_hi),1)
+prop.table(table(acquisition_hi$inf_rv_cat2, acquisition_hi$inf_multi_hi),1)
+summary(logit_hi)
+exp(cbind(Est = fixef(logit_hi), LL = fixef(logit_hi) - 1.96 * logit_hi_se, UL = fixef(logit_hi) + 1.96*logit_hi_se))
+summary(logit_hi2)
+exp(cbind(Est = fixef(logit_hi2), LL = fixef(logit_hi2) - 1.96 * logit_hi2_se, UL = fixef(logit_hi2) + 1.96*logit_hi2_se))
 
-table(survival_mc$inf_rv_yn)
-table(survival_mc$inf_rv_cat2)
-table(survival_mc$inf_rv_yn, survival_mc$inf_multi_mc)
-table(survival_mc$inf_rv_cat2, survival_mc$inf_multi_mc)
-prop.table(table(survival_mc$inf_rv_yn, survival_mc$inf_multi_mc),1)
-prop.table(table(survival_mc$inf_rv_cat2, survival_mc$inf_multi_mc),1)
-summary(cox_mc)
-summary(cox_mc2)
+table(acquisition_mc$inf_rv_yn)
+table(acquisition_mc$inf_rv_cat2)
+table(acquisition_mc$inf_rv_yn, acquisition_mc$inf_multi_mc)
+table(acquisition_mc$inf_rv_cat2, acquisition_mc$inf_multi_mc)
+prop.table(table(acquisition_mc$inf_rv_yn, acquisition_mc$inf_multi_mc),1)
+prop.table(table(acquisition_mc$inf_rv_cat2, acquisition_mc$inf_multi_mc),1)
+summary(logit_mc)
+exp(cbind(Est = fixef(logit_mc), LL = fixef(logit_mc) - 1.96 * logit_mc_se, UL = fixef(logit_mc) + 1.96*logit_mc_se))
+summary(logit_mc2)
+exp(cbind(Est = fixef(logit_mc2), LL = fixef(logit_mc2) - 1.96 * logit_mc2_se, UL = fixef(logit_mc2) + 1.96*logit_mc2_se))
 
-table(survival_sa$inf_rv_yn)
-table(survival_sa$inf_rv_cat2)
-table(survival_sa$inf_rv_yn, survival_sa$inf_multi_sa)
-table(survival_sa$inf_rv_cat2, survival_sa$inf_multi_sa)
-prop.table(table(survival_sa$inf_rv_yn, survival_sa$inf_multi_sa),1)
-prop.table(table(survival_sa$inf_rv_cat2, survival_sa$inf_multi_sa),1)
-summary(cox_sa)
-summary(cox_sa2)
+table(acquisition_sa$inf_rv_yn)
+table(acquisition_sa$inf_rv_cat2)
+table(acquisition_sa$inf_rv_yn, acquisition_sa$inf_multi_sa)
+table(acquisition_sa$inf_rv_cat2, acquisition_sa$inf_multi_sa)
+prop.table(table(acquisition_sa$inf_rv_yn, acquisition_sa$inf_multi_sa),1)
+prop.table(table(acquisition_sa$inf_rv_cat2, acquisition_sa$inf_multi_sa),1)
+summary(logit_sa)
+exp(cbind(Est = fixef(logit_sa), LL = fixef(logit_sa) - 1.96 * logit_sa_se, UL = fixef(logit_sa) + 1.96*logit_sa_se))
+summary(logit_sa2)
+exp(cbind(Est = fixef(logit_sa2), LL = fixef(logit_sa2) - 1.96 * logit_sa2_se, UL = fixef(logit_sa2) + 1.96*logit_sa2_se))
 
-table(survival_sp$inf_rv_yn)
-table(survival_sp$inf_rv_cat2)
-table(survival_sp$inf_rv_yn, survival_sp$inf_multi_sp)
-table(survival_sp$inf_rv_cat2, survival_sp$inf_multi_sp)
-prop.table(table(survival_sp$inf_rv_yn, survival_sp$inf_multi_sp),1)
-prop.table(table(survival_sp$inf_rv_cat2, survival_sp$inf_multi_sp),1)
-summary(cox_sp)
-summary(cox_sp2)
+table(acquisition_sp$inf_rv_yn)
+table(acquisition_sp$inf_rv_cat2)
+table(acquisition_sp$inf_rv_yn, acquisition_sp$inf_multi_sp)
+table(acquisition_sp$inf_rv_cat2, acquisition_sp$inf_multi_sp)
+prop.table(table(acquisition_sp$inf_rv_yn, acquisition_sp$inf_multi_sp),1)
+prop.table(table(acquisition_sp$inf_rv_cat2, acquisition_sp$inf_multi_sp),1)
+summary(logit_sp)
+exp(cbind(Est = fixef(logit_sp), LL = fixef(logit_sp) - 1.96 * logit_sp_se, UL = fixef(logit_sp) + 1.96*logit_sp_se))
+summary(logit_sp2)
+exp(cbind(Est = fixef(logit_sp2), LL = fixef(logit_sp2) - 1.96 * logit_sp2_se, UL = fixef(logit_sp2) + 1.96*logit_sp2_se))

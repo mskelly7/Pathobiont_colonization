@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Pathogen Analyses
 # Matthew Kelly, MD, MPH 
 # Analyses of upper respiratory microbiome data
-# Last update: October 18, 2024
+# Last update: October 21, 2024
 
 remove(list=ls())
-setwd("______________") 
+setwd("____________________") 
 set.seed(1234)
 
 version
@@ -30,8 +30,6 @@ library(nlme)
 packageVersion("nlme")
 library(lme4)
 packageVersion("lme4")
-library(survival)
-packageVersion("survival")
 library(survminer)
 library(gplots)
 library(RColorBrewer)
@@ -206,7 +204,7 @@ summary(logit_stability)
 metadata_complete$OTH[metadata_complete$cluster!="OTH"] <- 0
 metadata_complete$OTH[metadata_complete$cluster=="OTH"] <- 1
 metadata_complete$OTH <- as.numeric(metadata_complete$OTH)
-logit_OTH <- glmer(OTH ~ inf_rv_yn + month + inf_multi_hi + inf_multi_mc + inf_multi_sa + inf_multi_sp +  
+logit_OTH <- glmer(OTH ~ inf_rv_yn + month + sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any +
                      (1 | study_id), data = metadata_complete, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 se <- sqrt(diag(vcov(logit_OTH)))
@@ -216,7 +214,7 @@ summary(logit_OTH)
 metadata_complete$STA[metadata_complete$cluster!="STA"] <- 0
 metadata_complete$STA[metadata_complete$cluster=="STA"] <- 1
 metadata_complete$STA <- as.numeric(metadata_complete$STA)
-logit_STA <- glmer(STA ~ inf_rv_yn + month + inf_multi_hi + inf_multi_mc + inf_multi_sp +  
+logit_STA <- glmer(STA ~ inf_rv_yn + month + sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any +
                      (1 | study_id), data = metadata_complete, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 se <- sqrt(diag(vcov(logit_STA)))
@@ -226,7 +224,7 @@ summary(logit_STA)
 metadata_complete$COR[metadata_complete$cluster!="COR"] <- 0
 metadata_complete$COR[metadata_complete$cluster=="COR"] <- 1
 metadata_complete$COR <- as.numeric(metadata_complete$COR)
-logit_COR <- glmer(COR ~ inf_rv_yn + month + 
+logit_COR <- glmer(COR ~ inf_rv_yn + month + sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any +
                      (1 | study_id), data = metadata_complete, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 se <- sqrt(diag(vcov(logit_COR)))
@@ -236,7 +234,7 @@ summary(logit_COR)
 metadata_complete$STR[metadata_complete$cluster!="STR"] <- 0
 metadata_complete$STR[metadata_complete$cluster=="STR"] <- 1
 metadata_complete$STR <- as.numeric(metadata_complete$STR)
-logit_STR <- glmer(STR ~ inf_rv_yn + month + inf_multi_hi + inf_multi_mc + inf_multi_sa + 
+logit_STR <- glmer(STR ~ inf_rv_yn + month + sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any +
                      (1 | study_id), data = metadata_complete, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 se <- sqrt(diag(vcov(logit_STR)))
@@ -246,7 +244,7 @@ summary(logit_STR)
 metadata_complete$CD[metadata_complete$cluster!="CD"] <- 0
 metadata_complete$CD[metadata_complete$cluster=="CD"] <- 1
 metadata_complete$CD <- as.numeric(metadata_complete$CD)
-logit_CD <- glmer(CD ~ inf_rv_yn + month + inf_multi_hi + inf_multi_mc + inf_multi_sa + inf_multi_sp + 
+logit_CD <- glmer(CD ~ inf_rv_yn + month + sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any +
                      (1 | study_id), data = metadata_complete, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 se <- sqrt(diag(vcov(logit_CD)))
@@ -256,7 +254,7 @@ summary(logit_CD)
 metadata_complete$HAE[metadata_complete$cluster!="HAE"] <- 0
 metadata_complete$HAE[metadata_complete$cluster=="HAE"] <- 1
 metadata_complete$HAE <- as.numeric(metadata_complete$HAE)
-logit_HAE <- glmer(HAE ~ inf_rv_yn + month + inf_multi_mc + inf_multi_sa + inf_multi_sp + 
+logit_HAE <- glmer(HAE ~ inf_rv_yn + month + sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any +
                     (1 | study_id), data = metadata_complete, family = binomial, 
                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 se <- sqrt(diag(vcov(logit_HAE)))
@@ -266,7 +264,7 @@ summary(logit_HAE)
 metadata_complete$CDM[metadata_complete$cluster!="CDM"] <- 0
 metadata_complete$CDM[metadata_complete$cluster=="CDM"] <- 1
 metadata_complete$CDM <- as.numeric(metadata_complete$CDM)
-logit_CDM <- glmer(CDM ~ inf_rv_yn + month + inf_multi_hi + inf_multi_sa + inf_multi_sp + 
+logit_CDM <- glmer(CDM ~ inf_rv_yn + month + sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any +
                      (1 | study_id), data = metadata_complete, family = binomial, 
                    control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 se <- sqrt(diag(vcov(logit_CDM)))
@@ -276,7 +274,7 @@ summary(logit_CDM)
 metadata_complete$MOR[metadata_complete$cluster!="MOR"] <- 0
 metadata_complete$MOR[metadata_complete$cluster=="MOR"] <- 1
 metadata_complete$MOR <- as.numeric(metadata_complete$MOR)
-logit_MOR <- glmer(MOR ~ inf_rv_yn + inf_multi_hi + inf_multi_sa + inf_multi_sp + 
+logit_MOR <- glmer(MOR ~ inf_rv_yn + month + sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any +
                     (1 | study_id), data = metadata_complete, family = binomial, 
                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
 se <- sqrt(diag(vcov(logit_MOR)))
@@ -287,99 +285,93 @@ rm(list=grep("logit",ls(),value=TRUE,invert=FALSE), tab, se)
 
 # Impact of CLUSTER on pathobiont colonization
 
-# Create datasets for survival analyses
-survival <- metadata_16s
-survival <- survival[order(survival$study_id, survival$month),]
-survival$month <- as.numeric(survival$month)
-survival$study_id <- as.factor(survival$study_id)
-survival <- suppressWarnings(slide(survival, "age_days", TimeVar="month", GroupVar="study_id", NewVar="age_lag", slideBy = -1))
-names(survival)[names(survival) == "age_days"] <- "stop_age"
-survival$stop <- as.numeric(survival$stop)
-names(survival)[names(survival) == "month"] <- "stop_month"
-names(survival)[names(survival) == "age_lag"] <- "start_age"
-survival$inf_multi_hi[survival$inf_multi_hi=="Y"] <- 1
-survival$inf_multi_hi[survival$inf_multi_hi=="N"] <- 0
-survival$inf_multi_hi <- as.numeric(survival$inf_multi_hi)
-survival$inf_multi_mc[survival$inf_multi_mc=="Y"] <- 1
-survival$inf_multi_mc[survival$inf_multi_mc=="N"] <- 0
-survival$inf_multi_mc <- as.numeric(survival$inf_multi_mc)
-survival$inf_multi_sa[survival$inf_multi_sa=="Y"] <- 1
-survival$inf_multi_sa[survival$inf_multi_sa=="N"] <- 0
-survival$inf_multi_sa <- as.numeric(survival$inf_multi_sa)
-survival$inf_multi_sp[survival$inf_multi_sp=="Y"] <- 1
-survival$inf_multi_sp[survival$inf_multi_sp=="N"] <- 0
-survival$inf_multi_sp <- as.numeric(survival$inf_multi_sp)
-survival <- suppressWarnings(slide(survival, "inf_multi_hi", TimeVar="stop_month", GroupVar="study_id", NewVar="hi_lag", slideBy = -1))
-survival <- suppressWarnings(slide(survival, "inf_multi_mc", TimeVar="stop_month", GroupVar="study_id", NewVar="mc_lag", slideBy = -1))
-survival <- suppressWarnings(slide(survival, "inf_multi_sa", TimeVar="stop_month", GroupVar="study_id", NewVar="sa_lag", slideBy = -1))
-survival <- suppressWarnings(slide(survival, "inf_multi_sp", TimeVar="stop_month", GroupVar="study_id", NewVar="sp_lag", slideBy = -1))
-survival$cluster_original[survival$cluster=="COR"] <- "COR"
-survival$cluster_original[survival$cluster=="STR"] <- "STR"
-survival$cluster_original[survival$cluster=="STA"] <- "STA"
-survival$cluster_original[survival$cluster=="CD"] <- "CD"
-survival$cluster_original[survival$cluster=="MOR"] <- "MOR"
-survival$cluster_original[survival$cluster=="CDM"] <- "CDM"
-survival$cluster_original[survival$cluster=="HAE"] <- "HAE"
-survival$cluster_original[survival$cluster=="OTH"] <- "OTH"
-survival <- suppressWarnings(slide(survival, "cluster_original", TimeVar="stop_month", GroupVar="study_id", NewVar="cluster_lag", slideBy = -1))
-nrow(survival)
-survival <- survival[,c("SampleID","study_id","start_age","stop_age","stop_month","inf_rv_yn","inf_rv_cat2","inf_multi_hi","hi_lag",
+# Create datasets for analyses of pathobiont acquisition
+acquisition <- metadata_16s
+acquisition <- acquisition[order(acquisition$study_id, acquisition$month),]
+acquisition$month <- as.numeric(acquisition$month)
+acquisition$study_id <- as.factor(acquisition$study_id)
+acquisition$inf_multi_hi[acquisition$inf_multi_hi=="Y"] <- 1
+acquisition$inf_multi_hi[acquisition$inf_multi_hi=="N"] <- 0
+acquisition$inf_multi_hi <- as.numeric(acquisition$inf_multi_hi)
+acquisition$inf_multi_mc[acquisition$inf_multi_mc=="Y"] <- 1
+acquisition$inf_multi_mc[acquisition$inf_multi_mc=="N"] <- 0
+acquisition$inf_multi_mc <- as.numeric(acquisition$inf_multi_mc)
+acquisition$inf_multi_sa[acquisition$inf_multi_sa=="Y"] <- 1
+acquisition$inf_multi_sa[acquisition$inf_multi_sa=="N"] <- 0
+acquisition$inf_multi_sa <- as.numeric(acquisition$inf_multi_sa)
+acquisition$inf_multi_sp[acquisition$inf_multi_sp=="Y"] <- 1
+acquisition$inf_multi_sp[acquisition$inf_multi_sp=="N"] <- 0
+acquisition$inf_multi_sp <- as.numeric(acquisition$inf_multi_sp)
+acquisition <- suppressWarnings(slide(acquisition, "inf_multi_hi", TimeVar="month", GroupVar="study_id", NewVar="hi_lag", slideBy = -1))
+acquisition <- suppressWarnings(slide(acquisition, "inf_multi_mc", TimeVar="month", GroupVar="study_id", NewVar="mc_lag", slideBy = -1))
+acquisition <- suppressWarnings(slide(acquisition, "inf_multi_sa", TimeVar="month", GroupVar="study_id", NewVar="sa_lag", slideBy = -1))
+acquisition <- suppressWarnings(slide(acquisition, "inf_multi_sp", TimeVar="month", GroupVar="study_id", NewVar="sp_lag", slideBy = -1))
+acquisition$cluster_original[acquisition$cluster=="COR"] <- "COR"
+acquisition$cluster_original[acquisition$cluster=="STR"] <- "STR"
+acquisition$cluster_original[acquisition$cluster=="STA"] <- "STA"
+acquisition$cluster_original[acquisition$cluster=="CD"] <- "CD"
+acquisition$cluster_original[acquisition$cluster=="MOR"] <- "MOR"
+acquisition$cluster_original[acquisition$cluster=="CDM"] <- "CDM"
+acquisition$cluster_original[acquisition$cluster=="HAE"] <- "HAE"
+acquisition$cluster_original[acquisition$cluster=="OTH"] <- "OTH"
+acquisition <- suppressWarnings(slide(acquisition, "cluster_original", TimeVar="month", GroupVar="study_id", NewVar="cluster_lag", slideBy = -1))
+nrow(acquisition)
+acquisition <- acquisition[,c("SampleID","study_id","month","inf_rv_yn","inf_rv_cat2","inf_multi_hi","hi_lag",
                         "inf_multi_mc","mc_lag","inf_multi_sa","sa_lag","inf_multi_sp","sp_lag", "sex", "lbw", "mat_hiv", "residence", "wood", "num_kids", "season", 
                         "breastmilk", "inf_abx_any", "pcv", "cluster_original", "cluster_lag")]
 # Remove 0-month timepoint (do not predict outcome at 0 months)
-survival <- subset(survival, stop_month!="0")
-nrow(survival)
+acquisition <- subset(acquisition, month!="0")
+nrow(acquisition)
 # Remove intervals with baseline or persistent colonization
-survival_hi <- subset(survival, hi_lag!=1)
-nrow(survival_hi)
-survival_mc <- subset(survival, mc_lag!=1)
-nrow(survival_mc)
-survival_sa <- subset(survival, sa_lag!=1)
-nrow(survival_sa)
-survival_sp <- subset(survival, sp_lag!=1)
-nrow(survival_sp)
-remove(survival)
+acquisition_hi <- subset(acquisition, hi_lag!=1)
+nrow(acquisition_hi)
+acquisition_mc <- subset(acquisition, mc_lag!=1)
+nrow(acquisition_mc)
+acquisition_sa <- subset(acquisition, sa_lag!=1)
+nrow(acquisition_sa)
+acquisition_sp <- subset(acquisition, sp_lag!=1)
+nrow(acquisition_sp)
+remove(acquisition)
 
 # H. influenzae
-survival_hi <- within(survival_hi, cluster_lag <- relevel(as.factor(cluster_lag), ref = "COR"))
-cox_hi <- coxph(Surv(start_age, stop_age, inf_multi_hi) ~ cluster_lag + stop_month + 
-                  cluster(study_id), id=study_id, data=survival_hi)
-summary(cox_hi)
-cox_hi_ph <- cox.zph(cox_hi) # test of the proportional hazards assumption (P<0.05 is indicative of non-proportional hazards)
-cox_hi_ph
-suppressWarnings(ggcoxzph(cox_hi_ph)) # generate plot of scaled Schoenfeld residuals
-remove(cox_hi_ph)
+acquisition_hi <- within(acquisition_hi, cluster_lag <- relevel(as.factor(cluster_lag), ref = "COR"))
+logit_hi <- glmer(inf_multi_hi ~ cluster_lag + month + inf_rv_yn + 
+                    sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + (1 | study_id), 
+                  data = acquisition_hi, family = binomial, 
+                  control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_hi)
+logit_hi_se <- sqrt(diag(vcov(logit_hi)))
+exp(cbind(Est = fixef(logit_hi), LL = fixef(logit_hi) - 1.96 * logit_hi_se, UL = fixef(logit_hi) + 1.96*logit_hi_se))
 
 # M. catarrhalis
-survival_mc <- within(survival_mc, cluster_lag <- relevel(as.factor(cluster_lag), ref = "COR"))
-cox_mc <- coxph(Surv(start_age, stop_age, inf_multi_mc) ~ cluster_lag + stop_month + 
-                  cluster(study_id), id=study_id, data=survival_mc)
-summary(cox_mc)
-cox_mc_ph <- cox.zph(cox_mc) # test of the proportional hazards assumption (P<0.05 is indicative of non-proportional hazards)
-cox_mc_ph
-suppressWarnings(ggcoxzph(cox_mc_ph)) # generate plot of scaled Schoenfeld residuals
-remove(cox_mc_ph)
+acquisition_mc <- within(acquisition_mc, cluster_lag <- relevel(as.factor(cluster_lag), ref = "COR"))
+logit_mc <- glmer(inf_multi_mc ~ cluster_lag + month + inf_rv_yn + 
+                    sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + (1 | study_id), 
+                  data = acquisition_mc, family = binomial, 
+                  control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_mc)
+logit_mc_se <- sqrt(diag(vcov(logit_mc)))
+exp(cbind(Est = fixef(logit_mc), LL = fixef(logit_mc) - 1.96 * logit_mc_se, UL = fixef(logit_mc) + 1.96*logit_mc_se))
 
 # S. aureus
-survival_sa <- within(survival_sa, cluster_lag <- relevel(as.factor(cluster_lag), ref = "COR"))
-cox_sa <- coxph(Surv(start_age, stop_age, inf_multi_sa) ~ cluster_lag + stop_month + 
-                  cluster(study_id), id=study_id, data=survival_sa)
-summary(cox_sa)
-cox_sa_ph <- cox.zph(cox_sa) # test of the proportional hazards assumption (P<0.05 is indicative of non-proportional hazards)
-cox_sa_ph
-suppressWarnings(ggcoxzph(cox_sa_ph)) # generate plot of scaled Schoenfeld residuals
-remove(cox_sa_ph)
+acquisition_sa <- within(acquisition_sa, cluster_lag <- relevel(as.factor(cluster_lag), ref = "COR"))
+logit_sa <- glmer(inf_multi_sa ~ cluster_lag + month + inf_rv_yn + 
+                    sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + (1 | study_id), 
+                  data = acquisition_sa, family = binomial, 
+                  control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_sa)
+logit_sa_se <- sqrt(diag(vcov(logit_sa)))
+exp(cbind(Est = fixef(logit_sa), LL = fixef(logit_sa) - 1.96 * logit_sa_se, UL = fixef(logit_sa) + 1.96*logit_sa_se))
 
 # S. pneumoniae
-survival_sp <- within(survival_sp, cluster_lag <- relevel(as.factor(cluster_lag), ref = "COR"))
-cox_sp <- coxph(Surv(start_age, stop_age, inf_multi_sp) ~ cluster_lag + stop_month + 
-                  season + mat_hiv + num_kids + breastmilk + inf_abx_any + pcv + 
-                  cluster(study_id), id=study_id, data=survival_sp)
-summary(cox_sp)
-cox_sp_ph <- cox.zph(cox_sp) # test of the proportional hazards assumption (P<0.05 is indicative of non-proportional hazards)
-cox_sp_ph
-suppressWarnings(ggcoxzph(cox_sp_ph)) # generate plot of scaled Schoenfeld residuals
-remove(cox_sp_ph)
+acquisition_sp <- within(acquisition_sp, cluster_lag <- relevel(as.factor(cluster_lag), ref = "COR"))
+logit_sp <- glmer(inf_multi_sp ~ cluster_lag + month + inf_rv_yn + 
+                    sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + pcv + (1 | study_id), 
+                  data = acquisition_sp, family = binomial, 
+                  control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_sp)
+logit_sp_se <- sqrt(diag(vcov(logit_sp)))
+exp(cbind(Est = fixef(logit_sp), LL = fixef(logit_sp) - 1.96 * logit_sp_se, UL = fixef(logit_sp) + 1.96*logit_sp_se))
 
 # *************************************************************
 # Preprocessing of data for analyses of URT microbiota features 
@@ -441,24 +433,24 @@ metadata_complete$num_kids_trunc <- pmin(metadata_complete$num_kids, 4)
 # Save processed data
 sample_data(phy.complete) <- metadata_complete
 summary(metadata_complete)
-saveRDS(phy.complete, file="phyloseq_proc.RDS")
-write.csv(data.frame(sample_data(phy.complete)), file="metadata_proc.csv")
-write.csv(otu_table(phy.complete), file="countdata_proc.csv")
-write.csv(tax_table(phy.complete), file="taxdata_proc.csv")
+saveRDS(phy.complete, file="Pixu_Analyses/phyloseq_proc.RDS")
+write.csv(data.frame(sample_data(phy.complete)), file="Pixu_Analyses/metadata_proc.csv")
+write.csv(otu_table(phy.complete), file="Pixu_Analyses/countdata_proc.csv")
+write.csv(tax_table(phy.complete), file="Pixu_Analyses/taxdata_proc.csv")
 phy.picrust <- prune_samples(sample_names(phy.complete), phy.picrust)
 tab.picrust <- t(otu_table(phy.picrust))
-write.csv(tab.picrust, file="funcdata_proc.csv")
+write.csv(tab.picrust, file="Pixu_Analyses/funcdata_proc.csv")
 
 # ********************************************
 # Analyses of data for URT microbiota features 
 # ********************************************
 
-metadata <- read.csv("metadata_proc.csv", header=T, row.names=1)
-countdata <- read.csv("countdata_proc.csv", header=T, row.names=1)
-taxdata <- read.csv("taxdata_proc.csv", header=T, row.names=1)
+metadata <- read.csv("Pixu_Analyses/metadata_proc.csv", header=T, row.names=1)
+countdata <- read.csv("Pixu_Analyses/countdata_proc.csv", header=T, row.names=1)
+taxdata <- read.csv("Pixu_Analyses/taxdata_proc.csv", header=T, row.names=1)
 taxdata$feature <- taxdata$ASV
 metadata$study_id <- as.factor(metadata$study_id)
-func_reladata <- read.csv("funcdata_proc.csv", header=T, row.names=1)
+func_reladata <- read.csv("Pixu_Analyses/funcdata_proc.csv", header=T, row.names=1)
 table(rownames(metadata)==rownames(countdata))
 
 # Construct spline variables for month, default has degree=3 and no knots 
@@ -480,7 +472,7 @@ table(tax_keep)
 count_filter <- countdata[rownames(metadata), tax_keep]
 count_filter$ASV_other <- rowSums(countdata[rownames(metadata), !tax_keep])
 dim(count_filter)
-write.csv(count_filter, file="count_filter.csv")
+write.csv(count_filter, file="Pixu_Analyses/count_filter.csv")
 
 # Filter pathway data
 cut_ra <- 0.01
@@ -572,7 +564,7 @@ for (ii in 1:length(var_infect)){
   # tabulate the length of time between predictors and response variables
   print(table(data_forpred_ii$month-data_forpred_ii$month_prev))
 }
-write.csv(data_forpred, file="data_forpred.csv")
+write.csv(data_forpred, file="Pixu_Analyses/data_forpred.csv")
 
 # ***************************************************************************************************************
 # Random forest models evaluating the utility of the URT microbiota for the prediction of pathobiont colonization
@@ -610,10 +602,10 @@ for (ii in 1:length(var_infect)){
                                                  observed=data_forpred_ii[,var_infect[ii]],
                                                  predprob=predprob_ii))
 }
-saveRDS(res_rf_month, file="res_rf_month_only.RDS")
+saveRDS(res_rf_month, file="Pixu_Analyses/results_v2/res_rf_month_only.RDS")
 
 # Summarize AUC and feature importance
-res_rf_month <- readRDS("res_rf_month_only.RDS")
+res_rf_month <- readRDS("Pixu_Analyses/results_v2/res_rf_month_only.RDS")
 roc_auc_month_rf <- matrix(NA, length(var_infect), 3)
 colnames(roc_auc_month_rf) <- c("CI_lower", "AUC", "CI_upper")
 rownames(roc_auc_month_rf) <- var_infect
@@ -629,7 +621,7 @@ for (ii in 1:length(var_infect)){
 }
 
 roc_auc_month_rf
-write.xlsx(roc_auc_month_rf, file="randomForest_month_only.xlsx", 
+write.xlsx(roc_auc_month_rf, file="Pixu_Analyses/figure_table_v2/randomForest_month_only.xlsx", 
            sheetN="AUC", append=F)
 
 # RF model 2: age + clinical covariates (includes respiratory virus infection)
@@ -668,11 +660,11 @@ for (ii in 1:length(var_infect)){
                                                     predprob=predprob_ii),
                                 importance=importance_ii)
 }
-saveRDS(res_rf_clinical, file="res_rf_clinical.RDS")
+saveRDS(res_rf_clinical, file="Pixu_Analyses/results_v2/res_rf_clinical.RDS")
 
 # Summarize AUC and feature importance
 
-res_rf_clinical <- readRDS("res_rf_clinical.RDS")
+res_rf_clinical <- readRDS("Pixu_Analyses/results_v2/res_rf_clinical.RDS")
 roc_auc_clinical <- matrix(NA, length(var_infect), 3)
 colnames(roc_auc_clinical) <- c("CI_lower", "AUC", "CI_upper")
 rownames(roc_auc_clinical) <- var_infect
@@ -698,9 +690,9 @@ for (ii in 1:length(var_infect)){
 roc_auc_clinical
 pheatmap(importance_clinical)
 
-write.xlsx(roc_auc_clinical, file="randomForest_clinical.xlsx", 
+write.xlsx(roc_auc_clinical, file="Pixu_Analyses/figure_table_v2/randomForest_clinical.xlsx", 
            sheetN="AUC", append=F)
-write.xlsx(importance_clinical, file="randomForest_clinical.xlsx", 
+write.xlsx(importance_clinical, file="Pixu_Analyses/figure_table_v2/randomForest_clinical.xlsx", 
            sheetN="Average Importance", append=T)
 
 # RF model 3: microbiome ONLY
@@ -737,11 +729,11 @@ for (ii in 1:length(var_infect)){
                                                predprob=predprob_ii),
                            importance=importance_ii)
 }
-saveRDS(res_rf_asv, file="res_rf_asv.RDS")
+saveRDS(res_rf_asv, file="Pixu_Analyses/results_v2/res_rf_asv.RDS")
 
 # Summarize AUC and feature importance
 
-res_rf_asv <- readRDS("res_rf_asv.RDS")
+res_rf_asv <- readRDS("Pixu_Analyses/results_v2/res_rf_asv.RDS")
 roc_auc_asv <- matrix(NA, length(var_infect), 3)
 colnames(roc_auc_asv) <- c("CI_lower", "AUC", "CI_upper")
 rownames(roc_auc_asv) <- var_infect
@@ -763,9 +755,9 @@ for (ii in 1:length(var_infect)){
 roc_auc_asv
 pheatmap(importance_asv)
 
-write.xlsx(roc_auc_asv, file="randomForest_asv.xlsx", 
+write.xlsx(roc_auc_asv, file="Pixu_Analyses/figure_table_v2/randomForest_asv.xlsx", 
            sheetN="AUC", append=F)
-write.xlsx(importance_asv, file="randomForest_asv.xlsx", 
+write.xlsx(importance_asv, file="Pixu_Analyses/figure_table_v2/randomForest_asv.xlsx", 
            sheetN="Average Importance", append=T)
 
 # RF model 4: microbiome + functional pathway data
@@ -802,11 +794,11 @@ for (ii in 1:length(var_infect)){
                                                        predprob=predprob_ii),
                                    importance=importance_ii)
 }
-saveRDS(res_rf_asv_pathway, file="res_rf_asv_pathway.RDS")
+saveRDS(res_rf_asv_pathway, file="Pixu_Analyses/results_v2/res_rf_asv_pathway.RDS")
 
 # Summarize AUC and feature importance
 
-res_rf_asv_pathway <- readRDS("res_rf_asv_pathway.RDS")
+res_rf_asv_pathway <- readRDS("Pixu_Analyses/results_v2/res_rf_asv_pathway.RDS")
 roc_auc_asv_pathway <- matrix(NA, length(var_infect), 3)
 colnames(roc_auc_asv_pathway) <- c("CI_lower", "AUC", "CI_upper")
 rownames(roc_auc_asv_pathway) <- var_infect
@@ -829,9 +821,9 @@ for (ii in 1:length(var_infect)){
 roc_auc_asv_pathway
 pheatmap(importance_asv_pathway)
 
-write.xlsx(roc_auc_asv_pathway, file="randomForest_asv_pathway.xlsx", 
+write.xlsx(roc_auc_asv_pathway, file="Pixu_Analyses/figure_table_v2/randomForest_asv_pathway.xlsx", 
            sheetN="AUC", append=F)
-write.xlsx(importance_asv_pathway, file="randomForest_asv_pathway.xlsx", 
+write.xlsx(importance_asv_pathway, file="Pixu_Analyses/figure_table_v2/randomForest_asv_pathway.xlsx", 
            sheetN="Average Importance", append=T)
 
 # RF model 5: microbiome + clinical variables (including age and respiratory virus infection)
@@ -870,11 +862,11 @@ for (ii in 1:length(var_infect)){
                                                         predprob=predprob_ii),
                                     importance=importance_ii)
 }
-saveRDS(res_rf_asv_clinical, file="res_rf_asv_clinical.RDS")
+saveRDS(res_rf_asv_clinical, file="Pixu_Analyses/results_v2/res_rf_asv_clinical.RDS")
 
 # Summarize AUC and feature importance
 
-res_rf_asv_clinical <- readRDS("res_rf_asv_clinical.RDS")
+res_rf_asv_clinical <- readRDS("Pixu_Analyses/results_v2/res_rf_asv_clinical.RDS")
 roc_auc_asv_clinical <- matrix(NA, length(var_infect), 3)
 colnames(roc_auc_asv_clinical) <- c("CI_lower", "AUC", "CI_upper")
 rownames(roc_auc_asv_clinical) <- var_infect
@@ -900,9 +892,9 @@ for (ii in 1:length(var_infect)){
 roc_auc_asv_clinical
 pheatmap(importance_asv_clinical)
 
-write.xlsx(roc_auc_asv_clinical, file="randomForest_asv_clinical.xlsx", 
+write.xlsx(roc_auc_asv_clinical, file="Pixu_Analyses/figure_table_v2/randomForest_asv_clinical.xlsx", 
            sheetN="AUC", append=F)
-write.xlsx(importance_asv_clinical, file="randomForest_asv_clinical.xlsx", 
+write.xlsx(importance_asv_clinical, file="Pixu_Analyses/figure_table_v2/randomForest_asv_clinical.xlsx", 
            sheetN="Average Importance", append=T)
 
 # RF model 6: clinical variables (including age and respiratory virus infection), microbiome, and pathway data (kitchen sink model)
@@ -941,11 +933,11 @@ for (ii in 1:length(var_infect)){
                                                predprob=predprob_ii),
                            importance=importance_ii)
 }
-saveRDS(res_rf_all, file="res_rf_all.RDS")
+saveRDS(res_rf_all, file="Pixu_Analyses/results_v2/res_rf_all.RDS")
 
 # Summarize AUC and feature importance
 
-res_rf_all <- readRDS("res_rf_all.RDS")
+res_rf_all <- readRDS("Pixu_Analyses/results_v2/res_rf_all.RDS")
 roc_auc_all <- matrix(NA, length(var_infect), 3)
 colnames(roc_auc_all) <- c("CI_lower", "AUC", "CI_upper")
 rownames(roc_auc_all) <- var_infect
@@ -973,9 +965,9 @@ for (ii in 1:length(var_infect)){
 roc_auc_all
 pheatmap(importance_all)
 
-write.xlsx(roc_auc_all, file="randomForest_all.xlsx", 
+write.xlsx(roc_auc_all, file="Pixu_Analyses/figure_table_v2/randomForest_all.xlsx", 
            sheetN="AUC", append=F)
-write.xlsx(importance_all, file="randomForest_all.xlsx", 
+write.xlsx(importance_all, file="Pixu_Analyses/figure_table_v2/randomForest_all.xlsx", 
            sheetN="Average Importance", append=T)
 
 # *************************************************************************************
@@ -1010,13 +1002,13 @@ for (ii in 1:length(var_infect)){
   res_ASV$qvalue <- p.adjust(res_ASV$`Pr(>|z|)`, method="fdr")
   res_all[[ii]] <- res_ASV
 }
-saveRDS(res_all, file="glmer_ASV_acquisition_adj_month.RDS")
+saveRDS(res_all, file="Pixu_Analyses/results_v2/glmer_ASV_acquisition_adj_month.RDS")
 
 # Save result in spreadsheet and print significant variables
 
-res_all <- readRDS("glmer_ASV_acquisition_adj_month.RDS")
+res_all <- readRDS("Pixu_Analyses/results_v2/glmer_ASV_acquisition_adj_month.RDS")
 for (ii in 1:length(var_infect)){
-  write.xlsx(res_all[[ii]], file="glmer_ASV_acquisition_adj_month.xlsx", 
+  write.xlsx(res_all[[ii]], file="Pixu_Analyses/figure_table_v2/glmer_ASV_acquisition_adj_month.xlsx", 
              sheetN=var_infect[ii], append=ifelse(ii==1,F,T))
 }
 
@@ -1038,7 +1030,7 @@ for (ii in 1:length(var_infect)){
 
 set.seed(1234)
 for (ii in 1:length(var_infect0)){
-  outdir <- file.path("maaslin_impact", var_infect0[ii])
+  outdir <- file.path("Pixu_Analyses/results_v2/maaslin_impact", var_infect0[ii])
   if (!dir.exists(outdir)){
     dir.create(outdir)
   }else{
@@ -1061,10 +1053,10 @@ for (ii in 1:length(var_infect0)){
     mutate(coef_dir=ifelse(coef>0, "Pos", "Neg"))
   res <- merge(taxdata, res,  by="feature") %>%
     dplyr::filter(qval<=0.20)
-  write.csv(res, file=file.path("maaslin_impact", var_infect0[ii], "res_w_taxa.csv"))
+  write.csv(res, file=file.path("Pixu_Analyses/results_v2/maaslin_impact", var_infect0[ii], "res_w_taxa.csv"))
 }
 for (ii in 1:length(var_infect0)){
-  res <- read.csv(file.path("maaslin_impact", var_infect0[ii], "res_w_taxa.csv"), header=TRUE, row.names=1)
+  res <- read.csv(file.path("Pixu_Analyses/results_v2/maaslin_impact", var_infect0[ii], "res_w_taxa.csv"), header=TRUE, row.names=1)
   res <- res %>%
     dplyr::filter(metadata==var_infect0[ii], qval<=0.20) %>%
     dplyr::arrange(qval)
