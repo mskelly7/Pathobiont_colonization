@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Analyses
 # Matthew Kelly, MD, MPH 
 # Supplementary Figure 1
-# Last updated: October 18, 2024
+# Last updated: October 21, 2024
 
 remove(list=ls())
-setwd("______________________") 
+setwd("____________________") 
 set.seed(1234)
 
 version
@@ -147,7 +147,7 @@ fig_S1b <- ggplot(arrange(relative_inf, Genus), aes(x=cluster, y=Abundance, fill
                              expression(italic("Haemophilus")), expression(italic("Lactobacillus")), expression(italic("Micrococcus")), expression(italic("Moraxella")), 
                              expression(italic("Neisseria")), expression(italic("Prevotella")), expression(italic("Pseudomonas")), expression(italic("Staphylococcus")), 
                              expression(italic("Streptococcus")), expression(italic("Veillonella")), "Other")) + 
-  xlab("K-medoids microbiota profile") + ylab("Relative abundance") 
+  xlab("K-medoids microbiota type") + ylab("Relative abundance") 
 
 png(file="R_Plots/Figure_S1/Figure_S1b.png", width = 4.125, height = 2.8, units = 'in', res = 1200)
 plot(fig_S1b)
@@ -160,7 +160,7 @@ fig_S1e <- ggplot(arrange(relative_inf, Genus), aes(x=kmeans_cluster, y=Abundanc
                              expression(italic("Haemophilus")), expression(italic("Lactobacillus")), expression(italic("Micrococcus")), expression(italic("Moraxella")), 
                              expression(italic("Neisseria")), expression(italic("Prevotella")), expression(italic("Pseudomonas")), expression(italic("Staphylococcus")), 
                              expression(italic("Streptococcus")), expression(italic("Veillonella")), "Other")) + 
-  xlab("K-means microbiota profile") + ylab("Relative abundance") 
+  xlab("K-means microbiota type") + ylab("Relative abundance") 
 
 png(file="R_Plots/Figure_S1/Figure_S1e.png", width = 4.125, height = 2.8, units = 'in', res = 1200)
 plot(fig_S1e)
@@ -180,13 +180,13 @@ theme_barplot_clusters <-   theme(panel.background = element_blank(), panel.bord
 
 fig_S1c <- ggplot(relative_inf, aes(x=cluster, y=1, fill=kmeans_cluster)) +
   geom_bar(stat="identity", position="fill") + theme_barplot_clusters +
-  scale_fill_manual(values=cluster_cols_8) + ylab("K-medoids microbiota profile") 
+  scale_fill_manual(values=cluster_cols_8) + ylab("K-medoids microbiota type") 
 
 fig_S1c_x <- ggplot(relative_inf, aes(x=cluster, y=1, fill=cluster)) +
   geom_col(width = 1, position = "identity", color = "#00000020") +
   scale_fill_manual(values = cluster_cols_8, guide = "none") +
   coord_cartesian(expand = FALSE) +
-  theme_minimal() + xlab("K-means microbiota profile") +
+  theme_minimal() + xlab("K-means microbiota type") +
   theme(axis.text.x = element_text(hjust = 0.5, size = 8, color="black"), axis.title.x = element_text(size=9, color="black"),
         axis.text.y = element_blank(), axis.title.y = element_blank())
 
@@ -198,13 +198,13 @@ dev.off()
 
 fig_S1f <- ggplot(relative_inf, aes(x=kmeans_cluster, y=1, fill=cluster)) +
   geom_bar(stat="identity", position="fill") + theme_barplot_clusters +
-  scale_fill_manual(values=cluster_cols_8) + ylab("K-means microbiota profile") 
+  scale_fill_manual(values=cluster_cols_8) + ylab("K-means microbiota type") 
 
 fig_S1f_x <- ggplot(relative_inf, aes(x=kmeans_cluster, y=1, fill=cluster)) +
   geom_col(width = 1, position = "identity", color = "#00000020") +
   scale_fill_manual(values = cluster_cols_8, guide = "none") +
   coord_cartesian(expand = FALSE) +
-  theme_minimal() + xlab("K-medoids microbiota profile") +
+  theme_minimal() + xlab("K-medoids microbiota type") +
   theme(axis.text.x = element_text(hjust = 0.5, size = 8, color="black"), axis.title.x = element_text(size=9, color="black"),
         axis.text.y = element_blank(), axis.title.y = element_blank())
 

@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Analyses
 # Matthew Kelly, MD, MPH 
 # Supplementary Figure 2
-# Last updated: October 18, 2024
+# Last updated: October 21, 2024
 
 remove(list=ls())
-setwd("____________________") 
+setwd("_____________________") 
 set.seed(1234)
 
 version
@@ -619,6 +619,6 @@ plot(sp_alluvium)
 dev.off()
 
 png(file="R_Plots/Figure_S2.png", width = 7.5, height = 5.5, units = 'in', res = 1200)
-plot_grid(hi_alluvium, mc_alluvium, NULL, NULL, sa_alluvium, sp_alluvium, 
-          labels=c("a","b","","","c","d"), nrow=3, rel_heights=c(1,-0.05,1), label_size=9) 
+plot_grid(hi_alluvium, NULL, mc_alluvium, NULL, NULL, NULL, sa_alluvium, NULL, sp_alluvium, 
+          labels=c("a","","b","","","","c","","d"), nrow=3, rel_heights=c(1,-0.05,1), ncol=3, rel_widths=c(1,0.05,1), label_size=9) 
 dev.off()
