@@ -22,7 +22,7 @@ This repository contains the data files ([`Data_Files/`](Data_Files/)), scripts 
 
 - [`Scripts`](Scripts/)/
 
-  - [`RV_Data_Preprocessing.R`](Scripts/RV_Data_Preprocessing.R): processing of raw sequencing data and metadata; inputs: [`phy.bots.nps.rds`](Data_Files/phy.bots.nps.rds), [`metadata_inf_np.csv`](Data_Files/metadata_inf_np.csv); outputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`phy.inf.np.picrust.rds`](Data_Files/phy.inf.np.picrust.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
+  - [`RV_Data_Preprocessing.R`](Scripts/RV_Data_Preprocessing.R): processing of raw sequencing data and metadata; inputs: [`phy.bots.nps.rds`](Data_Files/phy.bots.nps.rds), [`metadata_inf_np.csv`](Data_Files/metadata_inf_np.csv), [`pathway_abundances.tsv`](Data_Files/pathway_abundances.tsv); outputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`phy.inf.np.picrust.rds`](Data_Files/phy.inf.np.picrust.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
   - [`RV_PCR_Analyses.R`](Scripts/RV_PCR_Analyses.R): analyses of PCR data on respiratory viruses and bacterial pathobionts; inputs: [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv)
   - [`RV_16S_Analyses.R`](Scripts/RV_16S_Analyses.R): analyses of upper respiratory microbiota data; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`phy.inf.np.picrust.rds`](Data_Files/phy.inf.np.picrust.rds); outputs: output files contained in [`Output_Files`](Output_Files/)
   - [`RV_Figure1.R`](Scripts/RV_Figure1.R): Figure 1; inputs: [`phy.inf.np.16s.rds`](Data_Files/phy.inf.np.16s.rds), [`metadata_inf_np_RV.csv`](Data_Files/metadata_inf_np_RV.csv), [`infant.png`](Data_Files/infant.png)
