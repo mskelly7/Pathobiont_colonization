@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Analyses
 # Matthew Kelly, MD, MPH 
 # Supplementary Figure 3
-# Last updated: October 18, 2024
+# Last updated: March 9, 2025
 
 remove(list=ls())
-setwd("_________________________________") 
+setwd("__________________") 
 set.seed(1234)
 
 version
@@ -20,8 +20,8 @@ library(ggtext)
 library(DataCombine)
 theme_set(theme_light()) 
 
-countdata <- read.csv("countdata_proc.csv", header=T, row.names=1)
-metadata <- read.csv("metadata_proc.csv", header=T, row.names=1)
+countdata <- read.csv("Pixu_Analyses/countdata_proc.csv", header=T, row.names=1)
+metadata <- read.csv("Pixu_Analyses/metadata_proc.csv", header=T, row.names=1)
 var_infect <- c("inf_rv_yn", "inf_multi_hi", "inf_multi_mc", "inf_multi_sa", "inf_multi_sp")
 pathogen_name <- c("Respiratory virus", "H. influenzae", "M. catarrhalis", "S. aureus", "S. pneumoniae")
 
@@ -132,3 +132,7 @@ fig_S3 <- plot_grid(asv7, asv8, asv5, asv5_scatter, asv1, asv3, asv15, asv15_sca
 png(file="R_Plots/Figure_S3.png", width = 8.5, height = 4, units = 'in', res = 1200)
 plot(fig_S3)
 dev.off()
+
+# Save files as a Source Data file
+source_data <- list('FigS3'=tab_interest) 
+openxlsx::write.xlsx(source_data, file="Source_Data/Figure_S3.xlsx")

@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Analyses
 # Matthew Kelly, MD, MPH 
 # Supplementary Figure 1
-# Last updated: October 21, 2024
+# Last updated: March 9, 2025
 
 remove(list=ls())
-setwd("____________________") 
+setwd("_________________") 
 set.seed(1234)
 
 version
@@ -114,6 +114,8 @@ table(relative_inf$Genus)
 relative_inf$Genus <- factor(relative_inf$Genus, levels=c("Acinetobacter", "Corynebacterium", "Dolosigranulum", "Gemella", 
                                                           "Haemophilus", "Lactobacillus", "Micrococcus", "Moraxella", "Neisseria", "Prevotella", 
                                                           "Pseudomonas", "Staphylococcus", "Streptococcus", "Veillonella", "Other"))
+relative_inf <- subset(relative_inf, Abundance!=0)
+relative_inf <- relative_inf[,c("Sample","Genus","cluster","kmeans_cluster","Abundance")]
 
 theme_barplot <-   theme(panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA),
                          axis.title.x = element_text(size=9, color="black"), 
@@ -222,3 +224,7 @@ fig_S1def <- plot_grid(fig_S1d, NULL, fig_S1e, fig_S1f, nrow=1, rel_widths=c(0.4
 png(file="R_Plots/Figure_S1.png", width = 13, height = 7, units = 'in', res = 1200)
 plot_grid(fig_S1abc, fig_S1def, nrow=2)
 dev.off()
+
+# Save files as a Source Data file
+source_data <- list('FigS1bcef'=relative_inf) 
+openxlsx::write.xlsx(source_data, file="Source_Data/Figure_S1.xlsx")

@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Analyses
 # Matthew Kelly, MD, MPH 
 # Supplementary Figure 2
-# Last updated: October 21, 2024
+# Last updated: March 9, 2025
 
 remove(list=ls())
-setwd("_____________________") 
+setwd("__________________") 
 set.seed(1234)
 
 version
@@ -170,18 +170,18 @@ cluster_1012$hi_yn[cluster_1012$inf_multi_hi=="N" & (cluster_1012$inf_hi_lag=="N
 cluster_1012$study_id <- paste0(cluster_1012$study_id, "_1012")
 cluster_1012 <- cluster_1012[,c("study_id", "timing", "cluster", "hi_yn")]
 
-cluster_all <- rbind(cluster_01, cluster_12, cluster_23, cluster_34, cluster_45, cluster_56, cluster_68, cluster_810, cluster_1012)
+cluster_hi_final <- rbind(cluster_01, cluster_12, cluster_23, cluster_34, cluster_45, cluster_56, cluster_68, cluster_810, cluster_1012)
 
-counts <- cluster_all %>% dplyr::count(hi_yn) 
-cluster_all <- merge(cluster_all, counts, by="hi_yn")
-cluster_all$pct <- (1/(cluster_all$n))*2
-cluster_all$timing <- factor(cluster_all$timing, levels=c("Pre","Post"))
+counts <- cluster_hi_final %>% dplyr::count(hi_yn) 
+cluster_hi_final <- merge(cluster_hi_final, counts, by="hi_yn")
+cluster_hi_final$pct <- (1/(cluster_hi_final$n))*2
+cluster_hi_final$timing <- factor(cluster_hi_final$timing, levels=c("Pre","Post"))
 
 alpha_hi <- c(0.3,0.3,1.0,0.3,0.3,0.3,0.3,0.3,0.3,0.3,1.0,0.3,0.3,0.3,0.3,0.3,
               0.3,0.3,1.0,0.3,0.3,0.3,0.3,0.3,0.3,0.3,1.0,0.3,0.3,0.3,0.3)
 # There are only 31 arguments because there are no OTH samples in the post-Hi acquisition group
 title_hi <- expression(paste(italic("H. influenzae"), " acquisition"))
-hi_alluvium <- ggplot(cluster_all, aes(x = timing, stratum = cluster, alluvium = study_id, y = pct, fill = cluster)) +
+hi_alluvium <- ggplot(cluster_hi_final, aes(x = timing, stratum = cluster, alluvium = study_id, y = pct, fill = cluster)) +
   scale_fill_manual(values=cluster_cols_9) +
   geom_flow(alpha=0.3) +
   geom_stratum(width=0.38, color="gray20", alpha=alpha_hi) + ylab("Proportion of samples") + xlab("") +
@@ -312,18 +312,18 @@ cluster_1012$mc_yn[cluster_1012$inf_multi_mc=="N" & (cluster_1012$inf_mc_lag=="N
 cluster_1012$study_id <- paste0(cluster_1012$study_id, "_1012")
 cluster_1012 <- cluster_1012[,c("study_id", "timing", "cluster", "mc_yn")]
 
-cluster_all <- rbind(cluster_01, cluster_12, cluster_23, cluster_34, cluster_45, cluster_56, cluster_68, cluster_810, cluster_1012)
+cluster_mc_final <- rbind(cluster_01, cluster_12, cluster_23, cluster_34, cluster_45, cluster_56, cluster_68, cluster_810, cluster_1012)
 
-counts <- cluster_all %>% dplyr::count(mc_yn) 
-cluster_all <- merge(cluster_all, counts, by="mc_yn")
-cluster_all$pct <- (1/(cluster_all$n))*2
-cluster_all$timing <- factor(cluster_all$timing, levels=c("Pre","Post"))
+counts <- cluster_mc_final %>% dplyr::count(mc_yn) 
+cluster_mc_final <- merge(cluster_mc_final, counts, by="mc_yn")
+cluster_mc_final$pct <- (1/(cluster_mc_final$n))*2
+cluster_mc_final$timing <- factor(cluster_mc_final$timing, levels=c("Pre","Post"))
 
 alpha_mc <- c(1.0,1.0,0.3,0.3,0.3,0.3,0.3,0.3,1.0,1.0,0.3,0.3,0.3,0.3,0.3,0.3,
               1.0,1.0,0.3,0.3,0.3,0.3,0.3,0.3,1.0,1.0,0.3,0.3,0.3,0.3,0.3)
 # There are only 31 arguments because there are no OTH samples in the post-Mcat acquisition group
 title_mc <- expression(paste(italic("M. catarrhalis"), " acquisition"))
-mc_alluvium <- ggplot(cluster_all, aes(x = timing, stratum = cluster, alluvium = study_id, y = pct, fill = cluster)) +
+mc_alluvium <- ggplot(cluster_mc_final, aes(x = timing, stratum = cluster, alluvium = study_id, y = pct, fill = cluster)) +
   scale_fill_manual(values=cluster_cols_9) +
   geom_flow(alpha=0.3) +
   geom_stratum(width=0.38, color="gray20", alpha=alpha_mc) + ylab("Proportion of samples") + xlab("") +
@@ -454,18 +454,18 @@ cluster_1012$sa_yn[cluster_1012$inf_multi_sa=="N" & (cluster_1012$inf_sa_lag=="N
 cluster_1012$study_id <- paste0(cluster_1012$study_id, "_1012")
 cluster_1012 <- cluster_1012[,c("study_id", "timing", "cluster", "sa_yn")]
 
-cluster_all <- rbind(cluster_01, cluster_12, cluster_23, cluster_34, cluster_45, cluster_56, cluster_68, cluster_810, cluster_1012)
+cluster_sa_final <- rbind(cluster_01, cluster_12, cluster_23, cluster_34, cluster_45, cluster_56, cluster_68, cluster_810, cluster_1012)
 
-counts <- cluster_all %>% dplyr::count(sa_yn) 
-cluster_all <- merge(cluster_all, counts, by="sa_yn")
-cluster_all$pct <- (1/(cluster_all$n))*2
-cluster_all$timing <- factor(cluster_all$timing, levels=c("Pre","Post"))
+counts <- cluster_sa_final %>% dplyr::count(sa_yn) 
+cluster_sa_final <- merge(cluster_sa_final, counts, by="sa_yn")
+cluster_sa_final$pct <- (1/(cluster_sa_final$n))*2
+cluster_sa_final$timing <- factor(cluster_sa_final$timing, levels=c("Pre","Post"))
 
 alpha_sa <- c(0.3,0.3,0.3,0.3,0.3,0.3,1.0,0.3,0.3,0.3,0.3,0.3,0.3,0.3,1.0,0.3,
               0.3,0.3,0.3,0.3,0.3,0.3,1.0,0.3,0.3,0.3,0.3,0.3,0.3,0.3,1.0)
 # There are only 31 arguments because there are no OTH samples in the post-SA acquisition group
 title_sa <- expression(paste(italic("S. aureus"), " acquisition"))
-sa_alluvium <- ggplot(cluster_all, aes(x = timing, stratum = cluster, alluvium = study_id, y = pct, fill = cluster)) +
+sa_alluvium <- ggplot(cluster_sa_final, aes(x = timing, stratum = cluster, alluvium = study_id, y = pct, fill = cluster)) +
   scale_fill_manual(values=cluster_cols_9) +
   geom_flow(alpha=0.3) +
   geom_stratum(width=0.38, color="gray20", alpha=alpha_sa) + ylab("Proportion of samples") + xlab("") +
@@ -596,18 +596,18 @@ cluster_1012$sp_yn[cluster_1012$inf_multi_sp=="N" & (cluster_1012$inf_sp_lag=="N
 cluster_1012$study_id <- paste0(cluster_1012$study_id, "_1012")
 cluster_1012 <- cluster_1012[,c("study_id", "timing", "cluster", "sp_yn")]
 
-cluster_all <- rbind(cluster_01, cluster_12, cluster_23, cluster_34, cluster_45, cluster_56, cluster_68, cluster_810, cluster_1012)
+cluster_sp_final <- rbind(cluster_01, cluster_12, cluster_23, cluster_34, cluster_45, cluster_56, cluster_68, cluster_810, cluster_1012)
 
-counts <- cluster_all %>% dplyr::count(sp_yn) 
-cluster_all <- merge(cluster_all, counts, by="sp_yn")
-cluster_all$pct <- (1/(cluster_all$n))*2
-cluster_all$timing <- factor(cluster_all$timing, levels=c("Pre","Post"))
+counts <- cluster_sp_final %>% dplyr::count(sp_yn) 
+cluster_sp_final <- merge(cluster_sp_final, counts, by="sp_yn")
+cluster_sp_final$pct <- (1/(cluster_sp_final$n))*2
+cluster_sp_final$timing <- factor(cluster_sp_final$timing, levels=c("Pre","Post"))
 
 alpha_sp <- c(0.3,0.3,0.3,0.3,1.0,0.3,0.3,0.3,0.3,0.3,0.3,0.3,1.0,0.3,0.3,0.3,
               0.3,0.3,0.3,0.3,1.0,0.3,0.3,0.3,0.3,0.3,0.3,0.3,1.0,0.3,0.3)
 # There are only 31 arguments because there are no OTH samples in the post-S. pneumoniae acquisition group
 title_sp <- expression(paste(italic("S. pneumoniae"), " acquisition"))
-sp_alluvium <- ggplot(cluster_all, aes(x = timing, stratum = cluster, alluvium = study_id, y = pct, fill = cluster)) +
+sp_alluvium <- ggplot(cluster_sp_final, aes(x = timing, stratum = cluster, alluvium = study_id, y = pct, fill = cluster)) +
   scale_fill_manual(values=cluster_cols_9) +
   geom_flow(alpha=0.3) +
   geom_stratum(width=0.38, color="gray20", alpha=alpha_sp) + ylab("Proportion of samples") + xlab("") +
@@ -622,3 +622,8 @@ png(file="R_Plots/Figure_S2.png", width = 7.5, height = 5.5, units = 'in', res =
 plot_grid(hi_alluvium, NULL, mc_alluvium, NULL, NULL, NULL, sa_alluvium, NULL, sp_alluvium, 
           labels=c("a","","b","","","","c","","d"), nrow=3, rel_heights=c(1,-0.05,1), ncol=3, rel_widths=c(1,0.05,1), label_size=9) 
 dev.off()
+
+# Save files as a Source Data file
+source_data <- list('FigS2a'=cluster_hi_final, 'FigS2b'=cluster_mc_final, 'FigS2c'=cluster_sa_final, 
+                    'FigS2d'=cluster_sp_final) 
+openxlsx::write.xlsx(source_data, file="Source_Data/Figure_S2.xlsx")
