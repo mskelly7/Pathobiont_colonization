@@ -4,7 +4,7 @@
 # Last updated: March 9, 2025
 
 remove(list=ls())
-setwd("___________________") 
+setwd("______________") 
 set.seed(1234)
 
 version
@@ -113,6 +113,8 @@ table(relative_inf$Genus)
 relative_inf$Genus <- factor(relative_inf$Genus, levels=c("Acinetobacter", "Corynebacterium", "Dolosigranulum", "Gemella", 
                                                           "Haemophilus", "Lactobacillus", "Micrococcus", "Moraxella", "Neisseria", "Prevotella", 
                                                           "Pseudomonas", "Staphylococcus", "Streptococcus", "Veillonella", "Other"))
+relative_inf <- subset(relative_inf, Abundance!=0)
+relative_inf <- relative_inf[,c("Sample","Genus","cluster","Abundance")]
 
 theme_barplot <-   theme(panel.background = element_blank(), panel.border = element_rect(colour = "black", fill=NA),
                          axis.title.x = element_text(size=9, color="black"), 
