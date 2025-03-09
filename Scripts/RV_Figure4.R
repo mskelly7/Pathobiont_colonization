@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Analyses
 # Matthew Kelly, MD, MPH 
 # Figure 4
-# Last updated: October 18, 2024
+# Last updated: March 9, 2025
 
 remove(list=ls())
-setwd("_____________________________") 
+setwd("_________________") 
 set.seed(1234)
 
 version
@@ -28,24 +28,24 @@ library(gtable)
 library(viridis)
 
 # Summary of results of random forest analyses
-roc_auc_month <- read.xlsx(file="randomForest_month_only.xlsx", sheetN="AUC")
+roc_auc_month <- read.xlsx(file="Pixu_Analyses/figure_table_v2/randomForest_month_only.xlsx", sheetN="AUC")
 roc_auc_month
 # Age on its own can be used to predict colonization with accuracy better than chance for all four bacterial pathobionts
-roc_auc_clinical <- read.xlsx(file="randomForest_clinical.xlsx", sheetN="AUC")
+roc_auc_clinical <- read.xlsx(file="Pixu_Analyses/figure_table_v2/randomForest_clinical.xlsx", sheetN="AUC")
 roc_auc_clinical
 # The addition of other clinical variables improves the accuracy of all models
 # The most important variables are month (particularly for Sa) and number of children in the household (particularly for Hi, Mc, and Sp)
 # Surprisingly, respiratory virus detection was only the 3rd most important variable for prediction in all models (4th after PCV for Sp)
-roc_auc_asv <- read.xlsx(file="randomForest_asv.xlsx", sheetN="AUC")
+roc_auc_asv <- read.xlsx(file="Pixu_Analyses/figure_table_v2/randomForest_asv.xlsx", sheetN="AUC")
 roc_auc_asv
 # Models built only with microbiome data from the preceding sample perform as well as or better than models with clinical variables for Hi, Sa, and Sp (not Mc)
-roc_auc_asv_pathway <- read.xlsx(file="randomForest_asv_pathway.xlsx", sheetN="AUC")
+roc_auc_asv_pathway <- read.xlsx(file="Pixu_Analyses/figure_table_v2/randomForest_asv_pathway.xlsx", sheetN="AUC")
 roc_auc_asv_pathway
 # The addition of functional pathway data does not substantively improve the performance of any models based on microbiome data
-roc_auc_asv_clinical <- read.xlsx(file="randomForest_asv_clinical.xlsx", sheetN="AUC")
+roc_auc_asv_clinical <- read.xlsx(file="Pixu_Analyses/figure_table_v2/randomForest_asv_clinical.xlsx", sheetN="AUC")
 roc_auc_asv_clinical
 # The addition of clinical variables data does not substantively improve the performance of any models based on microbiome data
-roc_auc_all <- read.xlsx(file="randomForest_all.xlsx", sheetN="AUC")
+roc_auc_all <- read.xlsx(file="Pixu_Analyses/figure_table_v2/randomForest_all.xlsx", sheetN="AUC")
 roc_auc_all
 # Models based on only microbiome data have similar accuracy to a model incorporating clinical variables and functional pathways
 # Variability in ability to predict colonization based on specific bacterial pathobiont
@@ -87,7 +87,7 @@ count_filter <- read.csv("Pixu_Analyses/count_filter.csv", header=T, row.names=1
 var_ASV <- colnames(count_filter)
 pathogen_name <- c("Respiratory virus", "H. influenzae", "M. catarrhalis", "S. aureus", "S. pneumoniae")
 
-res_rf_asv_clinical <- readRDS("res_rf_asv_clinical.RDS")
+res_rf_asv_clinical <- readRDS("Pixu_Analyses/results_v2/res_rf_asv_clinical.RDS")
 roc_auc_asv_clinical <- matrix(NA, length(var_infect), 3)
 colnames(roc_auc_asv_clinical) <- c("CI_lower", "AUC", "CI_upper")
 rownames(roc_auc_asv_clinical) <- var_infect
@@ -157,7 +157,7 @@ theme_upper <- theme(axis.text.y = element_blank(), axis.ticks.y = element_blank
                      panel.background = element_blank(), panel.grid.major.y = element_blank(), panel.border = element_blank(),
                      plot.margin = unit(c(0.3, 0, 0.2, 0), "cm"))
 
-log_reg_hi <- read.xlsx('glmer_ASV_acquisition_adj_month.xlsx', sheetN="inf_multi_hi")
+log_reg_hi <- read.xlsx('Pixu_Analyses/figure_table_v2/glmer_ASV_acquisition_adj_month.xlsx', sheetN="inf_multi_hi")
 log_reg_hi <- subset(log_reg_hi, qvalue<0.20)
 names(log_reg_hi)[names(log_reg_hi) == "NA."] <- "ASV"
 names(log_reg_hi)[names(log_reg_hi) == "Estimate"] <- "coef"
@@ -182,7 +182,7 @@ hi_plot <- log_reg_hi %>% ggplot(aes(x = coef, y = reorder(ASV, -coef), label = 
   ggtitle(title_hi)
 hi_plot
 
-log_reg_mc <- read.xlsx('glmer_ASV_acquisition_adj_month.xlsx', sheetN="inf_multi_mc")
+log_reg_mc <- read.xlsx('Pixu_Analyses/figure_table_v2/glmer_ASV_acquisition_adj_month.xlsx', sheetN="inf_multi_mc")
 log_reg_mc <- subset(log_reg_mc, qvalue<0.20)
 names(log_reg_mc)[names(log_reg_mc) == "NA."] <- "ASV"
 names(log_reg_mc)[names(log_reg_mc) == "Estimate"] <- "coef"
@@ -207,7 +207,7 @@ mc_plot <- log_reg_mc %>% ggplot(aes(x = coef, y = reorder(ASV, -coef), label = 
   ggtitle(title_mc)
 mc_plot
 
-log_reg_sa <- read.xlsx('glmer_ASV_acquisition_adj_month.xlsx', sheetN="inf_multi_sa")
+log_reg_sa <- read.xlsx('Pixu_Analyses/figure_table_v2/glmer_ASV_acquisition_adj_month.xlsx', sheetN="inf_multi_sa")
 log_reg_sa <- subset(log_reg_sa, qvalue<0.20)
 names(log_reg_sa)[names(log_reg_sa) == "NA."] <- "ASV"
 names(log_reg_sa)[names(log_reg_sa) == "Estimate"] <- "coef"
@@ -231,7 +231,7 @@ sa_plot <- log_reg_sa %>% ggplot(aes(x = coef, y = reorder(ASV, -coef), label = 
   ggtitle(title_sa)
 sa_plot
 
-log_reg_sp <- read.xlsx('glmer_ASV_acquisition_adj_month.xlsx', sheetN="inf_multi_sp")
+log_reg_sp <- read.xlsx('Pixu_Analyses/figure_table_v2/glmer_ASV_acquisition_adj_month.xlsx', sheetN="inf_multi_sp")
 log_reg_sp <- subset(log_reg_sp, qvalue<0.20)
 names(log_reg_sp)[names(log_reg_sp) == "NA."] <- "ASV"
 names(log_reg_sp)[names(log_reg_sp) == "Estimate"] <- "coef"
@@ -277,3 +277,8 @@ fig_4 <- fig_4 + annotate("text", x=0.801, y=0.980, size=2.6, label=expression(i
 png(file="R_Plots/Figure_4.png", width = 13.2, height = 5, units = 'in', res = 1200)
 suppressWarnings(plot(fig_4))
 dev.off()
+
+# Save files as a Source Data file
+source_data <- list('Fig4a'=tab_all_auc, 'Fig4b'=tab_importance, 'Fig4c_Hi'=log_reg_hi, 'Fig4c_Mc'=log_reg_mc,
+                    'Fig4c_Sa'=log_reg_sa, 'Fig4c_Sp'=log_reg_sp) 
+openxlsx::write.xlsx(source_data, file="Source_Data/Figure_4.xlsx")

@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Analyses
 # Matthew Kelly, MD, MPH 
 # Figure 1
-# Last updated: October 18, 2024
+# Last updated: March 9, 2025
 
 remove(list=ls())
-setwd("G:/My Drive/Research/SAS_Bots_Microbiome/RV_Pathogen") 
+setwd("___________________") 
 set.seed(1234)
 
 version
@@ -51,7 +51,7 @@ infant_virus <- length(unique(metadata_virus$study_id))
 infant_bact <- length(unique(metadata_bact$study_id))
 infant_16s <- length(unique(metadata_inf_np_16s$study_id))
 infant_n <- data.frame(variable = c("Respiratory viruses", "Bacterial pathobionts", "URT microbiota"), value = c(infant_virus, infant_bact, infant_16s), 
-                       x = c("N", "N", "N"))
+                       x = c("Infants", "Infants", "Infants"))
 infant_n$variable <- factor(infant_n$variable, levels=c("Respiratory viruses", "Bacterial pathobionts", "URT microbiota"))
 
 dot_infant <- ggplot(infant_n, aes(x = x, y = variable)) + 
@@ -72,7 +72,7 @@ total_virus <- nrow(metadata_virus)
 total_bact <- nrow(metadata_bact)
 total_16s <- nrow(metadata_inf_np_16s)
 total_n <- data.frame(variable = c("Respiratory viruses", "Bacterial pathobionts", "URT microbiota"), value = c(total_virus, total_bact, total_16s), 
-                      x = c("n", "n", "n"))
+                      x = c("Samples", "Samples", "Samples"))
 total_n$variable <- factor(total_n$variable, levels=c("Respiratory viruses", "Bacterial pathobionts", "URT microbiota"))
 
 dot_total <- ggplot(total_n, aes(x = x, y = variable)) + 
@@ -213,3 +213,8 @@ fig_1bc <- plot_grid(virus_plot, pathogen_plot, rel_widths = c(0.53,0.47), label
 png(file="R_Plots/Figure_1.png", width = 7.5, height = 4.75, units = 'in', res = 1200)
 plot_grid(fig_1a, NULL, fig_1bc, labels=NULL, nrow=3, rel_heights=c(2, 0.08, 2.75)) 
 dev.off()
+
+# Save files as a Source Data file
+source_data <- list('Fig1a_infant'=infant_n, 'Fig1a_samples'=total_n, 'Fig1a_months'=month_n, 
+                    'Fig1b'=virus_n, 'Fig1c'=pathogens)
+openxlsx::write.xlsx(source_data, file="Source_Data/Figure_1.xlsx")

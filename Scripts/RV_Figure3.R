@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Analyses
 # Matthew Kelly, MD, MPH 
 # Figure 3
-# Last updated: October 21, 2024
+# Last updated: March 9, 2025
 
 remove(list=ls())
-setwd("_________________________") 
+setwd("___________________") 
 set.seed(1234)
 
 version
@@ -387,3 +387,7 @@ fig_3bde <- plot_grid(cluster_barplot, NULL, rv_alluvium, maaslin_rv, rel_widths
 png(file="R_Plots/Figure_3.png", width = 11.5, height = 7, units = 'in', res = 1200)
 plot_grid(fig_3ac, fig_3bde, labels=NULL, nrow=2, rel_heights=c(1, 1)) 
 dev.off()
+
+# Save files as a Source Data file
+source_data <- list('Fig3b'=relative_inf, 'Fig3c'=cluster_month, 'Fig3d'=cluster_all, 'Fig3e'=maaslin_results_rv) 
+openxlsx::write.xlsx(source_data, file="Source_Data/Figure_3.xlsx")

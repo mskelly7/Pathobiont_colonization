@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Analyses
 # Matthew Kelly, MD, MPH 
 # Figure 2
-# Last updated: October 21, 2024
+# Last updated: March 9, 2025
 
 remove(list=ls())
-setwd("___________________") 
+setwd("_____________________") 
 set.seed(1234)
 
 version
@@ -42,15 +42,15 @@ metadata_bact <- metadata_inf_np_RV %>% filter(!is.na(inf_multi_hi))
 
 # Respiratory virus infection
 
-df <- tibble(pathogen = c("H. influenzae", "M. catarrhalis", "S. aureus", "S. pneumoniae"),
+df_rv <- tibble(pathogen = c("H. influenzae", "M. catarrhalis", "S. aureus", "S. pneumoniae"),
              OR = c(1.44, 1.34, 0.45, 1.83), 
              lower = c(1.06, 0.96, 0.29, 1.33),
              upper = c(1.96, 1.87, 0.70, 2.52))
 
-df$pathogen <- factor(df$pathogen, levels=c( "S. pneumoniae", "S. aureus", "M. catarrhalis", "H. influenzae"))
-levels(df$pathogen)
+df_rv$pathogen <- factor(df_rv$pathogen, levels=c( "S. pneumoniae", "S. aureus", "M. catarrhalis", "H. influenzae"))
+levels(df_rv$pathogen)
 
-forest_rv <- ggplot(df, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathogen, fill=pathogen)) + 
+forest_rv <- ggplot(df_rv, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathogen, fill=pathogen)) + 
   geom_linerange(linewidth=3,position=position_dodge(width = 0.5)) +
   geom_hline(yintercept=1, lty=2) + geom_point(size=3, shape=21, colour="white", stroke = 0.5,position=position_dodge(width = 0.5)) +
   scale_fill_manual(values=bacteria_cols_rev, guide = guide_legend(reverse = TRUE)) + 
@@ -64,16 +64,16 @@ forest_rv <- ggplot(df, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathog
 
 # H. influenzae colonization
 
-df <- tibble(pathogen = c("M. catarrhalis", "S. aureus", "S. pneumoniae"),
+df_hi <- tibble(pathogen = c("M. catarrhalis", "S. aureus", "S. pneumoniae"),
              OR = c(1.29, 0.92, 1.42), 
              lower = c(0.80, 0.55, 0.90),
              upper = c(2.08, 1.51, 2.24))
 
-df$pathogen <- factor(df$pathogen, levels=c( "S. pneumoniae", "S. aureus", "M. catarrhalis"))
-levels(df$pathogen)
+df_hi$pathogen <- factor(df_hi$pathogen, levels=c( "S. pneumoniae", "S. aureus", "M. catarrhalis"))
+levels(df_hi$pathogen)
 
 title_hi <- expression(paste("Preceding ", italic("H. influenzae"), " colonization"))
-forest_hi <- ggplot(df, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathogen, fill=pathogen)) + 
+forest_hi <- ggplot(df_hi, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathogen, fill=pathogen)) + 
   geom_linerange(linewidth=3,position=position_dodge(width = 0.5)) +
   geom_hline(yintercept=1, lty=2) + geom_point(size=3, shape=21, colour="white", stroke = 0.5,position=position_dodge(width = 0.5)) +
   scale_fill_manual(values=c("mediumorchid4", "forestgreen", "firebrick"), guide = guide_legend(reverse = TRUE)) + 
@@ -87,16 +87,16 @@ forest_hi <- ggplot(df, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathog
 
 # M. catarrhalis colonization
 
-df <- tibble(pathogen = c("H. influenzae", "S. aureus", "S. pneumoniae"),
+df_mc <- tibble(pathogen = c("H. influenzae", "S. aureus", "S. pneumoniae"),
              OR = c(1.82, 0.75, 1.58), 
              lower = c(1.28, 0.48, 1.12),
              upper = c(2.60, 1.18, 2.24))
 
-df$pathogen <- factor(df$pathogen, levels=c("S. pneumoniae", "S. aureus", "H. influenzae"))
-levels(df$pathogen)
+df_mc$pathogen <- factor(df_mc$pathogen, levels=c("S. pneumoniae", "S. aureus", "H. influenzae"))
+levels(df_mc$pathogen)
 
 title_mc <- expression(paste("Preceding ", italic("M. catarrhalis"), " colonization"))
-forest_mc <- ggplot(df, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathogen, fill=pathogen)) + 
+forest_mc <- ggplot(df_mc, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathogen, fill=pathogen)) + 
   geom_linerange(linewidth=3,position=position_dodge(width = 0.5)) +
   geom_hline(yintercept=1, lty=2) + geom_point(size=3, shape=21, colour="white", stroke = 0.5,position=position_dodge(width = 0.5)) +
   scale_fill_manual(values=c("mediumorchid4", "forestgreen", "darkslateblue"), guide = guide_legend(reverse = TRUE)) + 
@@ -110,16 +110,16 @@ forest_mc <- ggplot(df, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathog
 
 # S. aureus colonization
 
-df <- tibble(pathogen = c("H. influenzae", "M. catarrhalis", "S. pneumoniae"),
+df_sa <- tibble(pathogen = c("H. influenzae", "M. catarrhalis", "S. pneumoniae"),
              OR = c(0.94, 1.27, 1.02), 
              lower = c(0.64, 0.89, 0.71),
              upper = c(1.40, 1.80, 1.48))
 
-df$pathogen <- factor(df$pathogen, levels=c("S. pneumoniae", "M. catarrhalis", "H. influenzae"))
-levels(df$pathogen)
+df_sa$pathogen <- factor(df_sa$pathogen, levels=c("S. pneumoniae", "M. catarrhalis", "H. influenzae"))
+levels(df_sa$pathogen)
 
 title_sa <- expression(paste("Preceding ", italic("S. aureus"), " colonization"))
-forest_sa <- ggplot(df, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathogen, fill=pathogen)) + 
+forest_sa <- ggplot(df_sa, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathogen, fill=pathogen)) + 
   geom_linerange(linewidth=3,position=position_dodge(width = 0.5)) +
   geom_hline(yintercept=1, lty=2) + geom_point(size=3, shape=21, colour="white", stroke = 0.5,position=position_dodge(width = 0.5)) +
   scale_fill_manual(values=c("mediumorchid4", "firebrick", "darkslateblue"), guide = guide_legend(reverse = TRUE)) + 
@@ -133,16 +133,16 @@ forest_sa <- ggplot(df, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathog
 
 # S. pneumoniae colonization
 
-df <- tibble(pathogen = c("H. influenzae", "M. catarrhalis", "S. aureus"),
+df_sp <- tibble(pathogen = c("H. influenzae", "M. catarrhalis", "S. aureus"),
              OR = c(1.42, 1.07, 0.66), 
              lower = c(1.01, 0.71, 0.41),
              upper = c(1.98, 1.60, 1.06))
 
-df$pathogen <- factor(df$pathogen, levels=c( "S. aureus", "M. catarrhalis", "H. influenzae"))
-levels(df$pathogen)
+df_sp$pathogen <- factor(df_sp$pathogen, levels=c( "S. aureus", "M. catarrhalis", "H. influenzae"))
+levels(df_sp$pathogen)
 
 title_sp <- expression(paste("Preceding ", italic("S. pneumoniae"), " colonization"))
-forest_sp <- ggplot(df, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathogen, fill=pathogen)) + 
+forest_sp <- ggplot(df_sp, aes(x=pathogen, y=OR, ymin=lower, ymax=upper, col=pathogen, fill=pathogen)) + 
   geom_linerange(linewidth=3,position=position_dodge(width = 0.5)) +
   geom_hline(yintercept=1, lty=2) + geom_point(size=3, shape=21, colour="white", stroke = 0.5,position=position_dodge(width = 0.5)) +
   scale_fill_manual(values=c("forestgreen", "firebrick", "darkslateblue"), guide = guide_legend(reverse = TRUE)) + 
@@ -201,7 +201,8 @@ dev.off()
 # Venn diagram of bacterial pathobionts
 
 library(ggVennDiagram)
-venn <- metadata_virus[,c("SampleID", "inf_multi_sa","inf_multi_sp","inf_multi_mc","inf_multi_hi")]
+metadata_virus <- metadata_virus[,c("SampleID", "inf_multi_sa","inf_multi_sp","inf_multi_mc","inf_multi_hi")]
+venn <- metadata_virus
 sa <- subset(venn, inf_multi_sa=="Y")
 sa <- sa$SampleID
 sp <- subset(venn, inf_multi_sp=="Y")
@@ -234,3 +235,8 @@ fig_2bc <- plot_grid(fig_2b, venn_plot, rel_heights = c(0.45,0.55), labels=c("b"
 png(file="R_Plots/Figure_2.png", width = 7, height = 4.75, units = 'in', res = 1200)
 plot_grid(fig_2a, fig_2bc, labels=NULL, ncol=2, rel_widths=c(1.8,2)) 
 dev.off()
+
+# Save files as a Source Data file
+source_data <- list('Fig2a_RV'=df_rv, 'Fig2a_Hi'=df_hi, 'Fig2a_Mc'=df_mc, 'Fig2a_Sa'=df_sa, 'Fig2a_Sp'=df_sp,
+                    'Fig2b'=metadata_inf_spy, 'Fig2c'=metadata_virus)
+openxlsx::write.xlsx(source_data, file="Source_Data/Figure_2.xlsx")
