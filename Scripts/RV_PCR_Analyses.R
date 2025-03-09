@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Pathobiont Analyses
 # Matthew Kelly, MD, MPH 
 # Analyses of respiratory virus and bacterial pathobiont PCR data
-# Last update: October 21, 2024
+# Last update: March 9, 2025
 
 remove(list=ls())
-setwd("____________________") 
+setwd("_______________")
 set.seed(1234)
 
 version
@@ -23,6 +23,11 @@ packageVersion("lme4")
 
 metadata_inf_np <- read.csv("metadata_inf_np_RV.csv")
 nrow(metadata_inf_np)
+metadata_inf_np$inf_rv_cat3[metadata_inf_np$inf_rv_yn=="Y" & metadata_inf_np$current_uri=="Y"] <- "Symptomatic"
+metadata_inf_np$inf_rv_cat3[metadata_inf_np$inf_rv_yn=="Y" & metadata_inf_np$current_uri=="N"] <- "Asymptomatic"
+metadata_inf_np$inf_rv_cat3[metadata_inf_np$inf_rv_yn=="N"] <- "None"
+metadata_inf_np$inf_rv_cat3 <- as.factor(metadata_inf_np$inf_rv_cat3)
+table(metadata_inf_np$inf_rv_cat3, useNA="always")
 
 # Create dataset for summarizing infant characteristics
 infants <- metadata_inf_np %>% group_by(study_id) %>% filter(row_number(month) == 1)
@@ -59,7 +64,7 @@ acquisition <- suppressWarnings(slide(acquisition, "inf_multi_mc", TimeVar="mont
 acquisition <- suppressWarnings(slide(acquisition, "inf_multi_sa", TimeVar="month", GroupVar="study_id", NewVar="sa_lag", slideBy = -1))
 acquisition <- suppressWarnings(slide(acquisition, "inf_multi_sp", TimeVar="month", GroupVar="study_id", NewVar="sp_lag", slideBy = -1))
 nrow(acquisition)
-acquisition <- acquisition[,c("SampleID","study_id","age_days","month","inf_rv_yn","inf_rv_cat2","inf_multi_hi","hi_lag","inf_multi_mc","mc_lag",
+acquisition <- acquisition[,c("SampleID","study_id","age_days","month","inf_rv_yn","inf_rv_cat2","inf_rv_cat3","inf_multi_hi","hi_lag","inf_multi_mc","mc_lag",
                               "inf_multi_sa","sa_lag","inf_multi_sp","sp_lag", "sex", "lbw", "mat_hiv", "residence", "wood", "num_kids", "season", 
                               "breastmilk", "inf_abx_any", "pcv", "hib")]
 # Remove 0-month timepoint (do not predict outcome at 0 months)
@@ -275,7 +280,7 @@ logit_sp2 <- glmer(inf_multi_sp ~ inf_rv_cat2 + hi_lag + mc_lag + sa_lag + month
 summary(logit_sp2)
 logit_sp2_se <- sqrt(diag(vcov(logit_sp2)))
 exp(cbind(Est = fixef(logit_sp2), LL = fixef(logit_sp2) - 1.96 * logit_sp2_se, UL = fixef(logit_sp2) + 1.96*logit_sp2_se))
-# Both rhino/entero and other respiratory virus infections associated with an increased risk of S. pneumoniae colonization
+# Both rhino/entero and other respiratory virus infections associated with an increased odds of S. pneumoniae colonization
 
 # PNEUMOCOCCAL COLONIZATION DENSITY
 table(metadata_rv_sp$inf_rv_cat2)
@@ -284,6 +289,58 @@ metadata_rv_sp$inf_rv_cat2 <- as.factor(metadata_rv_sp$inf_rv_cat2)
 summary(lm(inf_sp ~ relevel(inf_rv_cat2, ref="Other") + inf_multi_hi + inf_multi_mc + inf_multi_sa + 
              month + sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + pcv, data=metadata_rv_sp))
 # No difference in pneumococcal colonization density comparing infections involving rhino/entero only vs. infections with other viruses
+
+# Analyses categorizing respiratory viruses based on the presence of symptoms
+
+table(acquisition$inf_rv_cat3, useNA="always")
+
+# H. influenzae - respiratory virus infections (symptomatic vs. asymptomatic) 
+logit_hi3 <- glmer(inf_multi_hi ~ relevel(inf_rv_cat3, ref="None") + mc_lag + sa_lag + sp_lag + month + 
+                     sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + (1 | study_id), 
+                   data = acquisition_hi, family = binomial, 
+                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_hi3)
+logit_hi3_se <- sqrt(diag(vcov(logit_hi3)))
+exp(cbind(Est = fixef(logit_hi3), LL = fixef(logit_hi3) - 1.96 * logit_hi3_se, UL = fixef(logit_hi3) + 1.96*logit_hi3_se))
+# Only symptomatic respiratory virus infection associated with increased odds of H. influenzae acquisition
+
+# M. catarrhalis - respiratory virus infections (symptomatic vs. asymptomatic)  
+logit_mc3 <- glmer(inf_multi_mc ~ relevel(inf_rv_cat3, ref="None") + hi_lag + sa_lag + sp_lag + month + 
+                     sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + (1 | study_id), 
+                   data = acquisition_mc, family = binomial, 
+                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_mc3)
+logit_mc3_se <- sqrt(diag(vcov(logit_mc3)))
+exp(cbind(Est = fixef(logit_mc3), LL = fixef(logit_mc3) - 1.96 * logit_mc3_se, UL = fixef(logit_mc3) + 1.96*logit_mc3_se))
+# Only symptomatic respiratory virus infection associated with increased odds of M. catarrhalis acquisition
+
+# S. aureus - respiratory virus infections (symptomatic vs. asymptomatic) 
+logit_sa3 <- glmer(inf_multi_sa ~ relevel(inf_rv_cat3, ref="None") + hi_lag + mc_lag + sp_lag + month + 
+                     sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + (1 | study_id), 
+                   data = acquisition_sa, family = binomial, 
+                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_sa3)
+logit_sa3_se <- sqrt(diag(vcov(logit_sa3)))
+exp(cbind(Est = fixef(logit_sa3), LL = fixef(logit_sa3) - 1.96 * logit_sa3_se, UL = fixef(logit_sa3) + 1.96*logit_sa3_se))
+# Both symptomatic and asymptomatic respiratory virus infection associated with reduced odds of S. aureus acquisition
+
+# S. pneumoniae - respiratory virus infections (symptomatic vs. asymptomatic)  
+logit_sp3 <- glmer(inf_multi_sp ~ relevel(inf_rv_cat3, ref="None") + hi_lag + mc_lag + sa_lag + month + 
+                     sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + pcv + (1 | study_id), 
+                   data = acquisition_sp, family = binomial, 
+                   control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 100000)))
+summary(logit_sp3)
+logit_sp3_se <- sqrt(diag(vcov(logit_sp3)))
+exp(cbind(Est = fixef(logit_sp3), LL = fixef(logit_sp3) - 1.96 * logit_sp3_se, UL = fixef(logit_sp3) + 1.96*logit_sp3_se))
+# Only symptomatic respiratory virus infection associated with increased odds of S. pneumoniae acquisition
+
+# PNEUMOCOCCAL COLONIZATION DENSITY
+table(metadata_rv_sp$inf_rv_cat3, useNA="always")
+tapply(metadata_rv_sp$inf_sp, metadata_rv_sp$inf_rv_cat3, summary)
+metadata_rv_sp$inf_rv_cat3 <- as.factor(metadata_rv_sp$inf_rv_cat3)
+summary(lm(inf_sp ~ relevel(inf_rv_cat3, ref="Asymptomatic") + inf_multi_hi + inf_multi_mc + inf_multi_sa + 
+             month + sex + lbw + mat_hiv + residence + wood + num_kids + season + breastmilk + inf_abx_any + pcv, data=metadata_rv_sp))
+# No significant difference in pneumococcal colonization density in symptomatic vs. asymptomatic detections
 
 # **************
 # ABSTRACT/INTRO
@@ -343,7 +400,7 @@ metadata_bact$inf_any_new[metadata_bact$inf_hi_new=="N" & metadata_bact$inf_mc_n
 metadata_bact$inf_any_new[metadata_bact$inf_hi_new=="Y" | metadata_bact$inf_mc_new=="Y" | metadata_bact$inf_sp_new=="Y"] <- "Y"
 prop.table(table(metadata_bact$inf_any_new, metadata_bact$inf_abx_any, useNA="always"),1)
 
-# Infant and sample characteristics associated with the dynamics of bacterial pathobiont colonization 
+# Respiratory viruses and environmental exposures associated with bacterial pathobiont colonization 
 
 summary(logit_hi)
 exp(cbind(Est = fixef(logit_hi), LL = fixef(logit_hi) - 1.96 * logit_hi_se, UL = fixef(logit_hi) + 1.96*logit_hi_se))
@@ -354,9 +411,13 @@ exp(cbind(Est = fixef(logit_sp), LL = fixef(logit_sp) - 1.96 * logit_sp_se, UL =
 summary(logit_sa)
 exp(cbind(Est = fixef(logit_sa), LL = fixef(logit_sa) - 1.96 * logit_sa_se, UL = fixef(logit_sa) + 1.96*logit_sa_se))
 
+table(metadata_rv$inf_rv_cat3)
 table(metadata_rv$inf_rv_cat2)
 tapply(metadata_rv_sp$inf_sp, metadata_rv_sp$inf_rv_yn, summary)
 summary(lm(inf_sp ~ inf_rv_yn + inf_multi_hi + inf_multi_mc + inf_multi_sa + month + season + mat_hiv + num_kids + breastmilk + inf_abx_any + pcv, data=metadata_rv_sp))
+tapply(metadata_rv_sp$inf_sp, metadata_rv_sp$inf_rv_cat3, summary)
+summary(lm(inf_sp ~ relevel(inf_rv_cat3, ref="Asymptomatic") + inf_multi_hi + inf_multi_mc + inf_multi_sa + month + season + mat_hiv + num_kids + 
+             breastmilk + inf_abx_any + pcv, data=metadata_rv_sp))
 tapply(metadata_rv_sp$inf_sp, metadata_rv_sp$inf_rv_cat2, summary)
 summary(lm(inf_sp ~ relevel(inf_rv_cat2, ref="Other") + inf_multi_hi + inf_multi_mc + inf_multi_sa + month + season + mat_hiv + num_kids + 
              breastmilk + inf_abx_any + pcv, data=metadata_rv_sp))
@@ -578,46 +639,54 @@ prop.table(table(metadata_rv$inf_rv_cat, metadata_rv$current_uri),1)
 # SUPPLEMENTAL TABLE 2
 # ********************
 
-table(acquisition_hi$inf_rv_yn)
+table(acquisition_hi$inf_rv_cat3)
+table(acquisition_hi$inf_rv_cat3, acquisition_hi$inf_multi_hi)
+prop.table(table(acquisition_hi$inf_rv_cat3, acquisition_hi$inf_multi_hi),1)
+summary(logit_hi3)
+exp(cbind(Est = fixef(logit_hi3), LL = fixef(logit_hi3) - 1.96 * logit_hi3_se, UL = fixef(logit_hi3) + 1.96*logit_hi3_se))
+
+table(acquisition_mc$inf_rv_cat3)
+table(acquisition_mc$inf_rv_cat3, acquisition_mc$inf_multi_mc)
+prop.table(table(acquisition_mc$inf_rv_cat3, acquisition_mc$inf_multi_mc),1)
+summary(logit_mc3)
+exp(cbind(Est = fixef(logit_mc3), LL = fixef(logit_mc3) - 1.96 * logit_mc3_se, UL = fixef(logit_mc3) + 1.96*logit_mc3_se))
+
+table(acquisition_sa$inf_rv_cat3)
+table(acquisition_sa$inf_rv_cat3, acquisition_sa$inf_multi_sa)
+prop.table(table(acquisition_sa$inf_rv_cat3, acquisition_sa$inf_multi_sa),1)
+summary(logit_sa3)
+exp(cbind(Est = fixef(logit_sa3), LL = fixef(logit_sa3) - 1.96 * logit_sa3_se, UL = fixef(logit_sa3) + 1.96*logit_sa3_se))
+
+table(acquisition_sp$inf_rv_cat3)
+table(acquisition_sp$inf_rv_cat3, acquisition_sp$inf_multi_sp)
+prop.table(table(acquisition_sp$inf_rv_cat3, acquisition_sp$inf_multi_sp),1)
+summary(logit_sp3)
+exp(cbind(Est = fixef(logit_sp3), LL = fixef(logit_sp3) - 1.96 * logit_sp3_se, UL = fixef(logit_sp3) + 1.96*logit_sp3_se))
+
+# ********************
+# SUPPLEMENTAL TABLE 3
+# ********************
+
 table(acquisition_hi$inf_rv_cat2)
-table(acquisition_hi$inf_rv_yn, acquisition_hi$inf_multi_hi)
 table(acquisition_hi$inf_rv_cat2, acquisition_hi$inf_multi_hi)
-prop.table(table(acquisition_hi$inf_rv_yn, acquisition_hi$inf_multi_hi),1)
 prop.table(table(acquisition_hi$inf_rv_cat2, acquisition_hi$inf_multi_hi),1)
-summary(logit_hi)
-exp(cbind(Est = fixef(logit_hi), LL = fixef(logit_hi) - 1.96 * logit_hi_se, UL = fixef(logit_hi) + 1.96*logit_hi_se))
 summary(logit_hi2)
 exp(cbind(Est = fixef(logit_hi2), LL = fixef(logit_hi2) - 1.96 * logit_hi2_se, UL = fixef(logit_hi2) + 1.96*logit_hi2_se))
 
-table(acquisition_mc$inf_rv_yn)
 table(acquisition_mc$inf_rv_cat2)
-table(acquisition_mc$inf_rv_yn, acquisition_mc$inf_multi_mc)
 table(acquisition_mc$inf_rv_cat2, acquisition_mc$inf_multi_mc)
-prop.table(table(acquisition_mc$inf_rv_yn, acquisition_mc$inf_multi_mc),1)
 prop.table(table(acquisition_mc$inf_rv_cat2, acquisition_mc$inf_multi_mc),1)
-summary(logit_mc)
-exp(cbind(Est = fixef(logit_mc), LL = fixef(logit_mc) - 1.96 * logit_mc_se, UL = fixef(logit_mc) + 1.96*logit_mc_se))
 summary(logit_mc2)
 exp(cbind(Est = fixef(logit_mc2), LL = fixef(logit_mc2) - 1.96 * logit_mc2_se, UL = fixef(logit_mc2) + 1.96*logit_mc2_se))
 
-table(acquisition_sa$inf_rv_yn)
 table(acquisition_sa$inf_rv_cat2)
-table(acquisition_sa$inf_rv_yn, acquisition_sa$inf_multi_sa)
 table(acquisition_sa$inf_rv_cat2, acquisition_sa$inf_multi_sa)
-prop.table(table(acquisition_sa$inf_rv_yn, acquisition_sa$inf_multi_sa),1)
 prop.table(table(acquisition_sa$inf_rv_cat2, acquisition_sa$inf_multi_sa),1)
-summary(logit_sa)
-exp(cbind(Est = fixef(logit_sa), LL = fixef(logit_sa) - 1.96 * logit_sa_se, UL = fixef(logit_sa) + 1.96*logit_sa_se))
 summary(logit_sa2)
 exp(cbind(Est = fixef(logit_sa2), LL = fixef(logit_sa2) - 1.96 * logit_sa2_se, UL = fixef(logit_sa2) + 1.96*logit_sa2_se))
 
-table(acquisition_sp$inf_rv_yn)
 table(acquisition_sp$inf_rv_cat2)
-table(acquisition_sp$inf_rv_yn, acquisition_sp$inf_multi_sp)
 table(acquisition_sp$inf_rv_cat2, acquisition_sp$inf_multi_sp)
-prop.table(table(acquisition_sp$inf_rv_yn, acquisition_sp$inf_multi_sp),1)
 prop.table(table(acquisition_sp$inf_rv_cat2, acquisition_sp$inf_multi_sp),1)
-summary(logit_sp)
-exp(cbind(Est = fixef(logit_sp), LL = fixef(logit_sp) - 1.96 * logit_sp_se, UL = fixef(logit_sp) + 1.96*logit_sp_se))
 summary(logit_sp2)
 exp(cbind(Est = fixef(logit_sp2), LL = fixef(logit_sp2) - 1.96 * logit_sp2_se, UL = fixef(logit_sp2) + 1.96*logit_sp2_se))

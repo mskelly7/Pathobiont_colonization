@@ -1,10 +1,10 @@
 # Botswana Infant Microbiome Study - RV-Bacterial Pathogen Analyses
 # Matthew Kelly, MD, MPH 
 # Dataset Preprocessing
-# Last update: October 18, 2024
+# Last update: March 9, 2025
 
 remove(list=ls())
-setwd("__________________") 
+setwd("________________________") 
 set.seed(1234)
 
 version
@@ -30,6 +30,7 @@ total_reads <- sum(sample_sums(phy.bots.nps))
 phy.controls <- subset_samples(phy.bots.nps, control=="Y")
 phy.controls <- filter_taxa(phy.controls, function(x) sum(x) > 0, TRUE)
 sample_sums(phy.controls)
+summary(sample_sums(phy.controls))
 ntaxa(phy.controls)
 control_asvs <- data.frame(t(otu_table(phy.controls)))
 control_asvs$ASV <- rownames((control_asvs))
@@ -996,7 +997,7 @@ write.table(otu_table, file='asv_table_picrust2.tsv', quote=FALSE, sep='\t', col
 # add_descriptions.py -i pathways_out/path_abun_unstrat.tsv.gz -m METACYC -o pathways_out/path_abun_unstrat_descrip.tsv.gz
 
 # Read in PICRUSt2 output file
-picrust <- read.table("PICRUSt2/pathways_out/path_abun_unstrat_descrip.tsv", sep = '\t', header = TRUE)
+picrust <- read.table("PICRUSt2/pathways_out/pathway_abundances.tsv", sep = '\t', header = TRUE)
 names(picrust) <- gsub(x = names(picrust), pattern = "\\.", replacement = "-") 
 row.names(picrust) <- picrust[,1]
 picrust_tax <- as.matrix(picrust[,c(1:2)])
