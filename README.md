@@ -3,7 +3,7 @@
 Author: Matthew Kelly <a href="https://orcid.org/0000-0001-8819-2315" target="orcid.widget" rel="noopener noreferrer" style="vertical-align:top;"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" style="width:1em;margin-right:.5em;" alt="ORCID iD icon"></a>  
 Last update: March 9, 2025
 
-This repository contains the files and code necessary to replicate the analyses presented in the manuscript '_Role of the upper respiratory microbiota in respiratory virus and bacterial pathobiont dynamics_', which has been accepted for publication in Nature Communications. The overall objective of this manuscript was to investigate relationships between respiratory viruses, the URT bacterial microbiota, and bacterial respiratory pathobionts during infancy. 
+This repository contains the files and code necessary to replicate the analyses presented in the manuscript '_Role of the upper respiratory microbiota in respiratory virus and bacterial pathobiont dynamics_', which has been accepted for publication in _Nature Communications_. The overall objective of this manuscript was to investigate relationships between respiratory viruses, the URT bacterial microbiota, and bacterial respiratory pathobionts during infancy. 
 
 ## Overview
 
